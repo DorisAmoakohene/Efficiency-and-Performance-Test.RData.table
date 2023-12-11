@@ -75,7 +75,7 @@ These issues address performance-related concerns and propose potential fixes or
    [Fixes Regression](https://github.com/Rdatatable/data.table/commit/e793f53466d99f86e70fc2611b708ae8c601a451)
 
    D.
-   [link to my atime code]([https://github.com/DorisAmoakohene/Researchwork_Rdata.table/blob/main/Performance%20regression%20with%235424.Rmd](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/Performance%20regression%20with%235424.Rmd))
+   [link to my atime code](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/Performance%20regression%20with%235424.Rmd)
 
    ![Plot showing the 3 branches(Regression,Fixed and Before) of Issue#5424](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.png)
 
