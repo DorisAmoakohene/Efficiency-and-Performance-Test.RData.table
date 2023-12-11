@@ -24,6 +24,9 @@ A more stable and optimized data.table package, with improved performance and us
 This repository aims to investigate performance regressions in the data.table package by examining its history, creating relevant performance tests, and using atime to analyze the performance of different code branches (before regression, regression, fix regression). Additionally, it provides a GitHub Action called r-asymptotic-testing that allows you to perform asymptotic testing on your data.table repository package upon every push/pull request.
 
 ## User Guide
+
+I have a [presentation](https://github.com/DorisAmoakohene/Data.table-Presentation) in Powerpoint which  delves into the data.table package in R, It highlights the efficiency of data.table by comparing it to other packages. The presentation also emphasizes the significance of performance testing, which was conducted using the reported issues on the data.table repository on GitHub. This testing process helped establish three distinct code branches: Regression, Before, and Fix.
+
 # To Start:
 
 1. To begin, conduct the atime test for the different code branches (before regression, regression, fix regression) to identify potential performance issues. [Here](https://github.com/DorisAmoakohene/Researchwork_Rdata.table/blob/main/Performance%20regression%20with%235424.Rmd) is an example of how to perform the atime test
@@ -112,7 +115,9 @@ D. [Link to my atime code showing this Regression](https://github.com/DorisAmoak
 
 ![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.sys.4440.png)
 
+I utilize a GitHub Action to run my forked repository of data.table explain above. You can find the repository by [clicking here](https://github.com/DorisAmoakohene/data.table). 
 
+![The GitHub Action generates a plot illustrating the asymptotic timing of the issues from GitHub above](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/tests_all_facet.png)
 
 
 # Efficiency of the Data.Table and other Packages
