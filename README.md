@@ -112,7 +112,9 @@ D. [Link to my atime code showing this Regression](https://github.com/DorisAmoak
 
 ![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.sys.4440.png)
 
+I utilize a GitHub Action to run my forked repository of data.table explain above. You can find the repository by [clicking here](https://github.com/DorisAmoakohene/data.table). 
 
+![The GitHub Action generates a plot illustrating the asymptotic timing of the issues from GitHub above](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/tests_all_facet.png)
 
 
 # Efficiency of the Data.Table and other Packages
