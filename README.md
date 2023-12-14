@@ -119,9 +119,10 @@ I utilize a GitHub Action to run my forked repository of data.table explain abov
 
 ![The GitHub Action generates a plot illustrating the asymptotic timing of the issues from GitHub above](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/tests_all_facet.png) 
 
-By adding the commit id this is an ![Example of a plot graph you should see](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/with/tests_all_facet.png)
+By adding the commit id this is how the plot should look
+![Example of a plot graph you should see](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/new%20action/tests_all_facet.png)
 
-see all plot [HERE](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/tree/main/with)
+see other plot [HERE](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/tree/main/new%20action)
 
 
 # Efficiency of the Data.Table and other Packages
