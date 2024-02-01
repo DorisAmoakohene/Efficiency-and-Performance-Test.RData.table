@@ -1,0 +1,101 @@
+---
+title: 'locating performance improvement in NEWS #5900'
+output: html_document
+date: "2024-02-01"
+---
+
+```{r}
+
+library(atime)
+library(ggplot2)
+library(data.table)
+
+```
+
+```{r}
+  tdir <- tempfile()
+  dir.create(tdir)
+  git2r::clone("https://github.com/Rdatatable/data.table", tdir)
+  
+```
+
+
+
+
+```{r}
+pkg.edit.DT <- function(old.Package, new.Package, sha, new.pkg.path){
+  pkg_find_replace <- function(glob, FIND, REPLACE){
+    atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+  }
+  Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+  Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+  new.Package_ <- paste0(Package_, "_", sha)
+  pkg_find_replace(
+    "DESCRIPTION", 
+    paste0("Package:\\s+", old.Package),
+    paste("Package:", new.Package))
+  pkg_find_replace(
+    file.path("src","Makevars.*in"),
+    Package_regex,
+    new.Package_)
+  pkg_find_replace(
+    file.path("R", "onLoad.R"),
+    Package_regex,
+    new.Package_)
+  pkg_find_replace(
+    file.path("R", "onLoad.R"),
+    sprintf('packageVersion\\("%s"\\)', old.Package),
+    sprintf('packageVersion\\("%s"\\)', new.Package))
+  pkg_find_replace(
+    file.path("src", "init.c"),
+    paste0("R_init_", Package_regex),
+    paste0("R_init_", gsub("[.]", "_", new.Package_)))
+  pkg_find_replace(
+    "NAMESPACE",
+    sprintf('useDynLib\\("?%s"?', Package_regex),
+    paste0('useDynLib(', new.Package_))
+}
+version.expr.list <- atime::atime_versions_exprs(
+  pkg.path=tdir,
+  pkg.edit.fun=pkg.edit.DT,
+  expr={
+    data.table::setDTthreads(THREADS)
+    data.table:::`[.data.table`(DT, , .(min(value), max(value)), by = group)
+  },
+  PR5916="8e83c505f15d72387b424a5c0e49b28f2df66b84",
+  "1.14.10"="2108cfa338b61ceb1cef029e29a82c0958e4aa25",
+  master="6f43a96ad478e02a48f61939e0c0d3047e949353")
+(atime.grid.args <- list(
+  PR=c(version.expr.list["PR5916"], list(param.list=list(THREADS=2^seq(0,3)))),
+  other=c(version.expr.list[c("1.14.10","master")], list(param.list=list(THREADS=1)))))
+expr.list <- list()
+for(grid.i in seq_along(atime.grid.args)){
+  new.exprs <- do.call(atime::atime_grid, atime.grid.args[[grid.i]])
+  expr.list[names(new.exprs)] <- new.exprs
+}
+expr.list
+library(data.table)
+atime.result.5900 <- atime::atime(
+  N=as.integer(10^seq(1, 8, by=0.5)),
+  setup={
+    set.seed(1)
+    DT <- data.table(group = sample(letters, N, replace = TRUE), value = rnorm(N))
+  },
+  seconds.limit=1,
+  expr.list=expr.list)
+```
+
+
+```{r}
+plot(atime.result.5900)
+
+plot(atime.result.5900)+
+  labs(title = "locating performance improvement in NEWS #5900")
+
+png("atime.result.5900.png")
+plot(atime.result.5900)+
+  labs(title = "locating performance improvement in NEWS #5900")
+dev.off()
+
+```
+

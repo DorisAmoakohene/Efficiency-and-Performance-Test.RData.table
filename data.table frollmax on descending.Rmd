@@ -1,0 +1,48 @@
+---
+title: "data.table frollmax on descending "
+output: html_document
+date: "2024-02-01"
+---
+
+
+```{r}
+library(atime)
+library(ggplot2)
+library(data.table)
+```
+
+
+
+```{r}
+result.frollmax <- atime::atime(
+  
+  N = 10^seq(1,7),
+  setup = {
+    set.seed(123)
+    atime <- function(N, k, func) {
+      x = func(N)
+      y.data.table = data.table::frollmax(x, k)
+      
+    }
+  },
+  seconds.limit = 2,
+  expr.list = list(
+    normal = quote(atime(N, 10^seq(1,3), rnorm)),
+    equalto0 = quote(atime(N, 10^seq(1,3), function(N) {rep(0, N)})),
+    ascending = quote(atime(N, 10^seq(1,3), function(N) {seq(0, length.out=N)})),
+    descending = quote(atime(N, 10^seq(1,3), function(N) {seq(0, by=-1, length.out=N)}))
+  )
+)
+```
+
+
+```{r}
+plot(result.frollmax)+
+  labs(title = "data.table frollmax on descending ")
+
+png("result.frollmax.png")
+plot(result.frollmax)+
+  labs(title = "data.table frollmax on descending ")
+dev.off()
+```
+

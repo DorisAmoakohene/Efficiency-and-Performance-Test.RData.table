@@ -1,0 +1,260 @@
+---
+title: "implement frev() - base::rev() that allocates less #5885"
+output: html_document
+date: "2024-02-01"
+---
+
+
+implement frev as fast base::rev alternative #5907
+```{r}
+
+
+library(atime)
+library(ggplot2)
+library(data.table)
+
+```
+
+```{r}
+  tdir <- tempfile()
+  dir.create(tdir)
+  git2r::clone("https://github.com/Rdatatable/data.table", tdir)
+  
+```
+
+
+```{r}
+pkg.edit.DT <- function(old.Package, new.Package, sha, new.pkg.path){
+  pkg_find_replace <- function(glob, FIND, REPLACE){
+    atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+  }
+  Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+  Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+  new.Package_ <- paste0(Package_, "_", sha)
+  pkg_find_replace(
+    "DESCRIPTION", 
+    paste0("Package:\\s+", old.Package),
+    paste("Package:", new.Package))
+  pkg_find_replace(
+    file.path("src","Makevars.*in"),
+    Package_regex,
+    new.Package_)
+  pkg_find_replace(
+    file.path("R", "onLoad.R"),
+    Package_regex,
+    new.Package_)
+  pkg_find_replace(
+    file.path("R", "onLoad.R"),
+    sprintf('packageVersion\\("%s"\\)', old.Package),
+    sprintf('packageVersion\\("%s"\\)', new.Package))
+  pkg_find_replace(
+    file.path("src", "init.c"),
+    paste0("R_init_", Package_regex),
+    paste0("R_init_", gsub("[.]", "_", new.Package_)))
+  pkg_find_replace(
+    "NAMESPACE",
+    sprintf('useDynLib\\("?%s"?', Package_regex),
+    paste0('useDynLib(', new.Package_))
+}
+(version.expr.list <- atime::atime_versions_exprs(
+  pkg.path= tdir,
+  pkg.edit.fun=pkg.edit.DT,
+  expr={
+    ## x = sample(2e8)
+    ## microbenchmark::microbenchmark(
+    ##   base = rev(x),
+    ##   frev_copy = frev(x, copy=TRUE),
+    ##   frev_inplace = frev(x, copy=FALSE),
+    ##   times = 10L,
+    ##   unit = "s"
+    ## )
+    data.table::frev(x, copy=COPY)
+  },
+  PR5907="48ded0b8f2c4df8c8466b698e19cffe8d77c778e"))
+  
+atime.grid.args <- c(
+  list(list(COPY=c(TRUE,FALSE))),
+  version.expr.list)
+(expr.list <- do.call(
+  atime::atime_grid,
+  atime.grid.args))
+expr.list$base <- quote(rev(x))
+
+library(data.table)
+atime.result.frev <- atime::atime(
+  N=as.integer(10^seq(1, 8, by=0.5)),
+  setup={
+    set.seed(1)
+    x = sample(N)
+  },
+  seconds.limit=1,
+  expr.list=expr.list)
+```
+
+
+```{r}
+plot(atime.result.frev)+
+  ggplot2::scale_x_log10(limits=c(NA, 1e9), breaks=10^seq(1, 10))
+
+
+plot(atime.result.frev)+
+  labs(title = "implement frev as fast base::rev alternative #5907 ")
+
+png("atime.result.frev.png")
+plot(atime.result.frev)+
+  labs(title = "implement frev as fast base::rev alternative #5907 ")
+dev.off()
+
+```
+```{r}
+result.frev <- atime::atime(
+  N=10^seq(1,7),
+  setup = {
+    set.seed(123)
+    x = sample(N)
+  },
+  seconds.limit = 2,
+  expr.list = list(
+    a1 <- frollmax(x, N, align="left", adaptive=TRUE)
+  )
+)
+```
+
+```{r}
+plot(result.frev)+
+  ggplot2::scale_x_log10(limits=c(NA, 1e9), breaks=10^seq(1, 10))
+
+
+plot(result.frev)+
+  labs(title = "implement frev as fast base::rev alternative #5907 ")
+
+png("result.frev.png")
+plot(result.frev)+
+  labs(title = "implement frev as fast base::rev alternative #5907 ")
+dev.off()
+```
+
+
+```{r}
+x = sample(2e8)
+    microbenchmark::microbenchmark(
+      base = rev(x),
+      frev_copy = frev(x, copy=TRUE),
+      frev_inplace = frev(x, copy=FALSE),
+      times = 10L,
+      unit = "s"
+    )
+```
+
+```{r}
+plot(x )
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+x = sample(2e8)
+    microbenchmark::microbenchmark(
+      base = rev(x),
+      frev_copy = frev(x, copy=TRUE),
+      frev_inplace = frev(x, copy=FALSE),
+      times = 10L,
+      unit = "s"
+    )
+```
+
+
+
+```{r}
+library(reverse)
+x = rnorm(1e8)
+system.time(t1 <- rev(x))
+#   user  system elapsed 
+#  0.481   0.212   0.693 
+system.time(t2 <- reverse(x, copy=TRUE))
+#   user  system elapsed 
+#  0.117   0.216   0.334 
+system.time(t3 <- reverse(x, copy=FALSE))
+#   user  system elapsed 
+#  0.060   0.000   0.061 
+identical(t1, t2)
+identical(t1, t3)
+
+x = rnorm(1e8)
+n = rep(1e2, 1e8)
+system.time(a1 <- frollmax(x, n, align="left", adaptive=TRUE))
+#    user  system elapsed 
+#  14.330   3.147   7.669
+system.time(a2 <- reverse(frollmax(reverse(x, copy=TRUE), reverse(n, copy=TRUE), align="right", adaptive=TRUE), copy=FALSE))
+#    user  system elapsed 
+#   9.092   0.807   2.687 
+identical(a1, a2)
+```
+
+
+
+```{r}
+result.frev <- atime::atime(
+  
+  N=as.integer(10^seq(1, 8, by=0.5)),
+  setup = {
+    set.seed(123)
+    x = sample(N)
+  },
+  seconds.limit = 2,
+  expr.list = list(
+    a1 <- frollmax(x, n, align="left", adaptive=TRUE)
+  )
+)
+```
+
+
+```{r}
+
+```
+
+result.frollmax <- atime::atime(
+  
+  N = 10^seq(1,7),
+  setup = {
+    set.seed(123)
+    atime <- function(N, k, func) {
+      x = func(N)
+      y.data.table = data.table::frollmax(x, k)
+      
+    }
+  },
+  seconds.limit = 2,
+  expr.list = list(
+    normal = quote(atime(N, 10^seq(1,3), rnorm)),
+    equalto0 = quote(atime(N, 10^seq(1,3), function(N) {rep(0, N)})),
+    ascending = quote(atime(N, 10^seq(1,3), function(N) {seq(0, length.out=N)})),
+    descending = quote(atime(N, 10^seq(1,3), function(N) {seq(0, by=-1, length.out=N)}))
+  )
+)

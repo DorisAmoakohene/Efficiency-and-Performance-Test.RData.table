@@ -1,0 +1,127 @@
+---
+title: 'faster bmerge numeric and roll #5187'
+output: html_document
+date: "2024-02-01"
+---
+
+```{r}
+library(microbenchmark)
+library(data.table)
+setDTthreads(1)
+n <- 1e7 
+x.df <- data.frame(date = as.POSIXct("2000-1-1") + 1:n, price = rnorm(n))
+x.dt <- data.table(x.df, key = "date")
+
+n2 <- 100
+y.df <- data.frame(date = sort(sample(x.df$date, n2)), adjustment = runif(n2))
+y.dt <- data.table(y.df, key = "date")
+
+falign <- function(x, y) {
+  i <- findInterval(as.numeric(x$date), as.numeric(y$date))
+  i[which(i == 0)] <- NA
+  x$price.adj <- x[, "price"] + y[i, "adjustment"]
+  x
+}
+
+falign.dt <- function(x, y) {
+  i <- findInterval(as.numeric(x$date), as.numeric(y$date))
+  i[which(i == 0)] <- NA
+  x[, price.adj := x[, "price"] + y[i, "adjustment"]]
+  x
+}
+
+microbenchmark(
+  falign(x.df, y.df),
+  falign.dt(x.dt, y.dt),
+  x.dt[, price.adj := y.dt[x.dt, price+adjustment, roll=TRUE]],
+  times=10, unit="s"
+)
+```
+
+
+
+
+```{r}
+
+library(atime)
+library(ggplot2)
+library(data.table)
+
+```
+
+```{r}
+  tdir <- tempfile()
+  dir.create(tdir)
+  git2r::clone("https://github.com/Rdatatable/data.table", tdir)
+  
+```
+
+
+```{r, warning=FALSE}
+
+atime.list.5187 <- atime::atime_versions(
+  pkg.path=tdir,
+  pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
+    pkg_find_replace <- function(glob, FIND, REPLACE){
+      atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+    }
+    Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+    Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+    new.Package_ <- paste0(Package_, "_", sha)
+    pkg_find_replace(
+      "DESCRIPTION", 
+      paste0("Package:\\s+", old.Package),
+      paste("Package:", new.Package))
+    pkg_find_replace(
+      file.path("src","Makevars.*in"),
+      Package_regex,
+      new.Package_)
+    pkg_find_replace(
+      file.path("R", "onLoad.R"),
+      Package_regex,
+      new.Package_)
+    pkg_find_replace(
+      file.path("R", "onLoad.R"),
+      sprintf('packageVersion\\("%s"\\)', old.Package),
+      sprintf('packageVersion\\("%s"\\)', new.Package))
+    pkg_find_replace(
+      file.path("src", "init.c"),
+      paste0("R_init_", Package_regex),
+      paste0("R_init_", gsub("[.]", "_", new.Package_)))
+    pkg_find_replace(
+      "NAMESPACE",
+      sprintf('useDynLib\\("?%s"?', Package_regex),
+      paste0('useDynLib(', new.Package_))
+  },
+  N=10^seq(1,20),
+  setup={ 
+    setDTthreads(1)
+    x.df <- data.frame(date = as.POSIXct("2000-1-1") + 1:N, price = rnorm(N))
+    x.dt <- data.table(x.df, key = "date")
+    
+    y.df <- data.frame(date = sort(sample(x.df$date, N)), adjustment = runif(N))
+    y.dt <- data.table(y.df, key = "date")
+    Value = y.dt[x.dt, price+adjustment, roll=TRUE]
+  },
+  
+  expr=data.table:::`[.data.table`(x.dt, , price.adj := Value),
+  "Before"="eb1a309e344d1a630cf03133cfa8148a6ab54eab",#https://github.com/Rdatatable/data.table/pull/5187/commits/eb1a309e344d1a630cf03133cfa8148a6ab54eab
+  "Regression"="e40456fef569d1153fbe203f4fb97dfa4377f205") #https://github.com/Rdatatable/data.table/pull/5187/commits/e40456fef569d1153fbe203f4fb97dfa4377f205
+```
+
+
+```{r}
+plot(atime.list.5187)+
+  labs(title = "faster bmerge numeric and roll #5187")
+
+png("atime.list.5187.png")
+plot(atime.list.5187)+
+  labs(title = "faster bmerge numeric and roll #5187")
+dev.off()
+
+```
+
+
+
+```
+
