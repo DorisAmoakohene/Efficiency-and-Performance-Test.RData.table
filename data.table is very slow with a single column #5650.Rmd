@@ -1,0 +1,228 @@
+---
+title: '[.data.table is very slow with a single column #5650'
+output: html_document
+date: "2024-02-02"
+---
+Regression
+[.data.table is very slow with a single integer #5636
+https://github.com/Rdatatable/data.table/issues/5636
+
+fixed by new with optimization to allow avoid [ overhead #4488
+https://github.com/Rdatatable/data.table/pull/4488
+
+
+```{r}
+library(data.table)
+allIterations <- data.frame(v1 = runif(1e5), v2 = runif(1e5))
+DoSomething <- function(row) someCalculation <- row[["v1"]] + 1
+system.time(for (r in 1:nrow(allIterations)) DoSomething(allIterations[r, ]))
+#   user  system elapsed 
+#  3.384   0.007   3.392
+allIterations <- as.data.table(allIterations)
+setDTthreads(1)
+system.time(for (r in 1:nrow(allIterations)) DoSomething(allIterations[r, , with=c(i=FALSE)]))
+#   user  system elapsed 
+#  5.432   0.121   5.554 
+```
+
+
+```{r}
+atime.list <- atime::atime(
+  N = nrow(newConfigurations),
+  setup = {
+    parameters <- list(types = c(p1 = "r", p2 = "r", p3 = "r", dummy = "c"),
+                       digits = 4)
+    n <- 10000
+    newConfigurations <- data.table(p1 = runif(n), p2 = runif(n), p3 = runif(n),
+                                    dummy = sample(c("d1", "d2"), n, replace = TRUE))
+  },
+)
+```
+
+```{r}
+result.4488 <- atime::atime(
+  N = 10^seq(1, 20),
+  setup = {
+    parameters <- list(types = c(p1 = "r", p2 = "r", p3 = "r", dummy = "c"),
+                       digits = 4)
+  },
+  seconds.limit = 2,
+  expr.list = list(
+    newConfigurations = {
+      data.table::data.table(p1 = runif(N), p2 = runif(N), p3 = runif(N),
+                             dummy = sample(c("d1", "d2"), N, replace = TRUE))
+    },
+    dt.J = {
+      for (i in seq_len(nrow(newConfigurations))) {
+        set(newConfigurations, i, j = j, value = repair_sum2one(as.data.frame(newConfigurations[i]), parameters))
+      }
+    },
+    repair_sum2one_time = {
+      for (i in seq_len(nrow(newConfigurations))) {
+        repair_sum2one(as.data.frame(newConfigurations[i]), parameters)
+      }
+    }
+  )
+)
+```
+
+
+
+```{r}
+result.4488 <- atime::atime(
+  N=10^seq(1,20),
+  setup = {
+    parameters <- list(types = c(p1 = "r", p2 = "r", p3 = "r", dummy = "c"),
+                       digits = 4)
+    newConfigurations <- data.table(p1 = runif(N), p2 = runif(N), p3 = runif(N),
+                                    dummy = sample(c("d1", "d2"), N, replace = TRUE))
+  },
+seconds.limit = 2,
+expr.list = list(
+  dt.J = for (i in seq_len(nrow(newConfigurations))) {
+    set(newConfigurations, i, j = j, value = repair_sum2one(as.data.frame(newConfigurations[i]), parameters))
+  },
+  repair_sum2one_time = 
+    for (i in seq_len(nrow(newConfigurations))) {
+      repair_sum2one(as.data.frame(newConfigurations[i]), parameters)
+    }
+  
+  
+)
+)
+```
+
+
+```{r}
+plot(result.4488)+
+  labs(title = "data.table is very slow with a single column #5650 ")
+
+png("result.4488.png")
+plot(result.4488)+
+  labs(title = "data.table is very slow with a single column #5650")
+dev.off()
+```
+
+
+```{r}
+
+
+library(atime)
+library(ggplot2)
+library(data.table)
+
+```
+
+```{r}
+  tdir <- tempfile()
+  dir.create(tdir)
+  git2r::clone("https://github.com/Rdatatable/data.table", tdir)
+  
+```
+
+
+```{r}
+
+atime.list.4488 <- atime::atime_versions(
+  pkg.path=tdir,
+  pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
+    pkg_find_replace <- function(glob, FIND, REPLACE){
+      atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+    }
+    Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+    Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+    new.Package_ <- paste0(Package_, "_", sha)
+    pkg_find_replace(
+      "DESCRIPTION", 
+      paste0("Package:\\s+", old.Package),
+      paste("Package:", new.Package))
+    pkg_find_replace(
+      file.path("src","Makevars.*in"),
+      Package_regex,
+      new.Package_)
+    pkg_find_replace(
+      file.path("R", "onLoad.R"),
+      Package_regex,
+      new.Package_)
+    pkg_find_replace(
+      file.path("R", "onLoad.R"),
+      sprintf('packageVersion\\("%s"\\)', old.Package),
+      sprintf('packageVersion\\("%s"\\)', new.Package))
+    pkg_find_replace(
+      file.path("src", "init.c"),
+      paste0("R_init_", Package_regex),
+      paste0("R_init_", gsub("[.]", "_", new.Package_)))
+    pkg_find_replace(
+      "NAMESPACE",
+      sprintf('useDynLib\\("?%s"?', Package_regex),
+      paste0('useDynLib(', new.Package_))
+  },
+  N=10^seq(1,20),
+  setup={ 
+    newConfigurations <- data.table(p1 = runif(N), p2 = runif(N), p3 = runif(N),
+                                    dummy = sample(c("d1", "d2"), N, replace=TRUE))
+    j <- colnames(newConfigurations)
+for (i in seq_len(nrow(newConfigurations)))
+      set(newConfigurations, i, j = j, value = repair_sum2one(as.data.frame(newConfigurations[i]), parameters))
+  },
+  expr = data.table:::`[.data.table`(newConfigurations, for (i in seq_len(nrow(newConfigurations))) {
+    set(newConfigurations, i, j = j, value = repair_sum2one(as.data.frame(newConfigurations[i]), parameters))
+  }),
+  "master"="6f43a96ad478e02a48f61939e0c0d3047e949353",#https://github.com/Rdatatable/data.table/tree/6f43a96ad478e02a48f61939e0c0d3047e949353
+  "PR4488"="c33e98bb0a2f919bc1b428a5b7985f45f9d88a77")#https://github.com/Rdatatable/data.table/pull/4488/commits/c33e98bb0a2f919bc1b428a5b7985f45f9d88a77
+```
+library(data.table)
+parameters <- list(types = c(p1 = "r", p2 = "r", p3 = "r", dummy = "c"),
+                   digits = 4)
+n <- 10000
+newConfigurations <- data.table(p1 = runif(n), p2 = runif(n), p3 = runif(n),
+                                dummy = sample(c("d1", "d2"), n, replace=TRUE))
+
+repair_sum2one <- function(configuration, parameters)
+{
+  isreal <- names(which(parameters$types[colnames(configuration)] == "r"))
+  digits <- parameters$digits[isreal]
+  c_real <- unlist(configuration[isreal])
+  c_real <- c_real / sum(c_real)
+  c_real[-1] <- round(c_real[-1], digits[-1])
+  c_real[1] <- 1 - sum(c_real[-1])
+  configuration[isreal] <- c_real
+  return(configuration)
+}
+j <- colnames(newConfigurations)
+for (i in seq_len(nrow(newConfigurations)))
+      set(newConfigurations, i, j = j, value = repair_sum2one(as.data.frame(newConfigurations[i]), parameters))
+
+# Measure the time used by data.table operations
+data.table_time <- system.time({
+  j <- colnames(newConfigurations)
+  for (i in seq_len(nrow(newConfigurations))) {
+    set(newConfigurations, i, j = j, value = repair_sum2one(as.data.frame(newConfigurations[i]), parameters))
+  }
+})
+
+# Measure the time used by the repair_sum2one function
+repair_sum2one_time <- system.time({
+  for (i in seq_len(nrow(newConfigurations))) {
+    repair_sum2one(as.data.frame(newConfigurations[i]), parameters)
+  }
+})
+
+# Print the execution times
+print(data.table_time)
+print(repair_sum2one_time)
+
+```{r}
+plot(atime.list.4488)+
+  labs(title = "data.table is very slow with a single integer #5636")
+
+png("atime.list.4488.png")
+plot(atime.list.4488)+
+  labs(title = "data.table is very slow with a single integer #5636")
+dev.off()
+
+```
+
+
+
+
