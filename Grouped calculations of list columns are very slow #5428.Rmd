@@ -1,0 +1,97 @@
+---
+title: 'Grouped calculations of list columns are very slow #5428'
+output: html_document
+date: "2024-02-02"
+---
+
+
+https://github.com/Rdatatable/data.table/issues/5428
+The second one should take about 3 times as long as the first one, which is not really reasonable (especially since the first call is not particularly fast, compared to more typical calculations).
+
+it seems that there are two tasks or calculations being compared, where the second task takes approximately three times longer than the first one. However, you mentioned that the first task is not particularly fast compared to more typical calculations, which suggests that the second task's duration may be unreasonably long.
+
+
+```{r}
+dt <- data.table::data.table(x = sample(10000, 10000000, TRUE), y = sample(10000, 10000000, TRUE), z = sample(10000, 10000000, TRUE))
+system.time(dt[, .I, by = c("x", "y")])
+system.time(dt[, .(.(.I)), by = c("x", "y")])
+```
+
+
+
+```{r}
+
+library(atime)
+library(ggplot2)
+library(data.table)
+```
+
+```{r}
+atime.5428 <- atime::atime(
+  N = 10^seq(4,7),
+  setup = {
+    dt <- data.table::data.table(x = sample(N, N, TRUE), y = sample(N, N, TRUE), z = sample(N, N, TRUE))
+    },
+  seconds.limit = 2,
+  expr.list = list(
+    dt = quote(atime(dt[, .I, by = c("x", "y")])),
+    dt3 = quote(atime(dt[, .(.(.I)), by = c("x", "y")]))
+   
+  )
+)
+```
+
+
+
+
+
+
+```{r}
+plot(atime.5428)+
+  labs(title = "Grouped calculations of list columns are very slow #5428 ")
+
+png("atime.5428.png")
+plot(atime.5428)+
+  labs(title = "Grouped calculations of list columns are very slow #5428 ")
+dev.off()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+atime.5428 <- atime::atime(
+  N = 10^seq(1,10),
+  setup = {
+    dt <- data.table::data.table(x = sample(N, N, TRUE), y = sample(N, N, TRUE), z = sample(N, N, TRUE))
+    },
+  seconds.limit = 2,
+  expr.list = list(
+    normal = quote(atime(dt, , .I, by = c("x", "y"))),
+    equalto0 = quote(atime(dt,, .(.(.I)), by = c("x", "y")))
+   
+  )
+)
+```
+
+
+```{r}
+plot(atime.5428)+
+  labs(title = "Grouped calculations of list columns are very slow #5428 ")
+
+png("atime.5428.png")
+plot(atime.5428)+
+  labs(title = "Grouped calculations of list columns are very slow #5428 ")
+dev.off()
+```
+```
+
