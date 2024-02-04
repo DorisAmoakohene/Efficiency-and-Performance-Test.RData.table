@@ -76,7 +76,7 @@ This is the [PR]( https://github.com/Rdatatable/data.table/pull/4558) that discu
 
 [The regression was fixed Regression by the addition of const int nth = getDTthreads]( https://github.com/Rdatatable/data.table/pull/4558/files)
 
-```{r,warning=FALSE}
+```{r,warning=FALSE,message=FALSE}
 
 library(atime)
 library(ggplot2)
@@ -84,7 +84,7 @@ library(data.table)
 
 ```
 
-```{r,warning=FALSE}
+```{r,warning=FALSE, message=FALSE}
   tdir <- tempfile()
   dir.create(tdir)
   git2r::clone("https://github.com/Rdatatable/data.table", tdir)
@@ -92,7 +92,7 @@ library(data.table)
 ```
 
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, message=FALSE}
 
 atime.list.4200 <- atime::atime_versions(
 pkg.path=tdir,
@@ -145,7 +145,7 @@ pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
 ```
 
 
-```{r, warning=FALSE}
+```{r, warning=FALSE,message=FALSE}
 plot(atime.list.4200)+
   labs(title = "groupby with dogroups (R expression) performance regression")
 
@@ -159,7 +159,7 @@ dev.off()
 ```
 
 
-# CHALLENGES
+# **CHALLENGES**
 Running performance tests provides real-time performance data, allowing for easier assessment of the package's performance. However, evaluating the performance of pre-release regression code (changes merged to the main branch but not yet released) and unmerged code in a pull request poses greater challenges. In my experience with performance testing, I have encountered the following challenges:
 
 **Difficulty in obtaining commit IDs:** Obtaining specific commit IDs can be a challenge, which may require reaching out for guidance and assistance.
