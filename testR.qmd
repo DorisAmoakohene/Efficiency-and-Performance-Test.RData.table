@@ -114,6 +114,6 @@ test.list <- list(
 ```
 
 ```{r}
-atime::atime_pkg("C:/Users/Doris Afriyie/data.tableactiontest/") 
+atime::atime_pkg("C:/Users/amoak/data.tablefork") 
 ```
 

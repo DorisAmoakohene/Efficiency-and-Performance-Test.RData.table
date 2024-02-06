@@ -87,7 +87,7 @@ library(data.table)
 ```{r,warning=FALSE, message=FALSE}
   tdir <- tempfile()
   dir.create(tdir)
-  git2r::clone("https://github.com/Rdatatable/data.table", tdir)
+  git2r::clone("https://github.com/Rdatatable/data.table", tdir )
   
 ```
 
@@ -156,7 +156,66 @@ dev.off()
 
 ```
 
+```{r,warning = FALSE, message = FALSE}
+atime.list.4440 <- atime::atime_versions(
+pkg.path=tdir,
+pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
+      pkg_find_replace <- function(glob, FIND, REPLACE){
+        atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+      }
+      Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+      Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+      new.Package_ <- paste0(Package_, "_", sha)
+      pkg_find_replace(
+        "DESCRIPTION", 
+        paste0("Package:\\s+", old.Package),
+        paste("Package:", new.Package))
+      pkg_find_replace(
+        file.path("src","Makevars.*in"),
+        Package_regex,
+        new.Package_)
+      pkg_find_replace(
+        file.path("R", "onLoad.R"),
+        Package_regex,
+        new.Package_)
+      pkg_find_replace(
+        file.path("R", "onLoad.R"),
+        sprintf('packageVersion\\("%s"\\)', old.Package),
+        sprintf('packageVersion\\("%s"\\)', new.Package))
+      pkg_find_replace(
+        file.path("src", "init.c"),
+        paste0("R_init_", Package_regex),
+        paste0("R_init_", gsub("[.]", "_", new.Package_)))
+      pkg_find_replace(
+        "NAMESPACE",
+        sprintf('useDynLib\\("?%s"?', Package_regex),
+        paste0('useDynLib(', new.Package_))
+    },
+  N= 10^seq(3,8),
+  setup={
+    set.seed(1L)
+    dt <- data.table(
+      a=sample(N,N))
+    setindex(dt, a)
+  },
+
+  expr=data.table:::shallow(dt),
+  "Before"="ad7b67c80a551b7a1e2ef8b73d6162ed7737c934",
+  "Regression"="752012f577f8e268bb6d0084ca39a09fa7fbc1c4", 
+  "Fixed"="9d3b9202fddb980345025a4f6ac451ed26a423be")
 ```
+
+
+```{r}
+plot(atime.list.4440)+
+  labs(title = "Remove deep copy of indices from shallow #4440")
+
+png("atime.list.4440.png")
+plot(atime.list.4440)+
+  labs(title = "Remove deep copy of indices from shallow #4440")
+dev.off()
+```
+
 
 
 # **CHALLENGES**

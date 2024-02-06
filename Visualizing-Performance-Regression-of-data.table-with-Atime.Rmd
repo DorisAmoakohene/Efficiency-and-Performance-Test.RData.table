@@ -1,0 +1,229 @@
+---
+title: "Visualizing Performance Regression of data.table with Atime"
+author: "Doris Afriyie Amoakohene"
+date: "2024-02-04"
+output: html_document
+---
+
+Since August 2023, I have been working on Expanding the open-source Ecosystem around data.table In R. data.table has become a widely adopted tool for data manipulation tasks, especially in scenarios involving large datasets. Its popularity stems from its remarkable speed and memory efficiency.
+Hence, it is necessary to improve the performance of the package and provide users with reliability.
+
+It is important that we prevent significant Performance Regression from reaching the data.table Package. Slowness, late execution or big memory usage can be frustrating, any Performance Regression that makes it into a version release will degrade user experience. In this blog post, I will demonstrate the use of benchmarking techniques to verify whether  reported issues on data.table have been successfully resolved.
+
+
+# **Understanding Performance in data.table?**
+
+data.table is an extension of R's data.frame, designed to handle large datasets efficiently. It provides a syntax that is both concise and expressive, allowing users to perform complex data manipulations with ease. Its efficiency is particularly evident when dealing with tasks like filtering, grouping, aggregating, and joining data.
+
+The development team behind data.table is committed to continuously improving its performance. Over the years, several major version changes have been introduced, aiming to enhance speed and efficiency. These changes include algorithmic optimizations, memory management improvements, and enhancements to parallel processing capabilities. Upgrading to the latest version ensures that users can leverage the most recent performance enhancements.
+ most recent performance enhancements.
+
+# **Benchmarking for Performance Evaluation**
+
+To evaluate data.table performance, it is essential to employ benchmarking methodologies. The approach I used utilizes the atime_versions function from the atime package, which measures the actual execution time of specific operations. This function allows for accurate comparisons between different versions of the data.table package, by benchmarking against realistic use cases and giving a graphical visualization of the results.
+
+In data.table, the term “Performance Regression” usually means a drop in both time metrics and memory metrics, and that is how we will be  using the term here.
+
+
+# **Why do we run Performance Tests on commits?**
+
+Running performance tests on commits helps maintain a high-performance standard for the package, detect and fix performance regressions, optimize code, validate performance improvements, and ensure consistent performance over time. It is an essential practice to deliver a performant and reliable package to end-users.
+
+# **What are the Performance Tests?**
+The goal of our atime Performance Tests is to gather memory and responsiveness time metrics while simulating the full range of member interactions with the data.table repository
+
+## In atime code, there are five main parts:
+
+1. `pkg.path`: This variable represents the path to the package being benchmarked. It specifies the location of the `data.table` package on your system.
+
+2. `N`: This variable determines the number of iterations for the benchmarking process. It is a sequence of numbers that define different data sizes to test the performance of the operation.
+
+3. `setup`: This section contains the setup code for generating the dataset used in the benchmarking process. 
+
+4. `expr`: This section contains the expression that represents the operation being benchmarked. It uses the `data.table::`[.data.table`` syntax to perform the  operation on the dataset. 
+
+5. `...` : This section specifies the different versions of the data.table packages  that will be tested. It includes three versions: "Before," "Regression," and "Fixed." Each version is associated with a specific commit id.
+
+The result from running the atime versions will be a list of the seconds.limit (numeric input param) and timings (data table of results).
+
+Lastly, I run a github action. The action defines test.list as a list with names corresponding to different tests. Each element of the test.list should be a list with named arguments N, setup, expr, which was  passed as arguments in your atime::atime_versions test. For further elaboration on the process of performing asymptotic time testing using the atime package, please refer to [this ](https://github.com/marketplace/actions/r-asymptotic-testing)
+
+## We run the full performance, Pull Request (PR):
+1. Before the issue is made (Before)
+2. when the PR is first submitted (Regression)
+3. when the PR is merged to the destination branch(Fixed)
+
+# **APPROACH**
+1. To begin, conduct the atime test for the different code branches (before regression, regression, fix regression) to identify potential performance issues. Here is an example of how to perform the [atime test](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table)
+
+NB: Set up the necessary environment and dependencies, ensuring that the data.table package and the atime package are installed and loaded.
+
+2. Generate a plot to showcase the fixes made in the data.table package using the atime package.
+
+3. Utilize the atime_versions function to track the fixes across different versions.
+
+4. Pass the following named arguments to atime::atime_versions: N, setup, expr, and the different code branches. More documentation of the atime package can be found [here](https://github.com/tdhock/atime/tree/compare-dt-tidy). 
+
+5. Use the plot function to visually present the execution times of the expression evaluated across different versions of the data.table package.
+Run the GitHub Action by writing tests in inst/atime/tests.R. 
+
+
+# Lets Run some examples to see how this work.
+
+The first example we will discuss is an issue reported on a performance regression when performing group computations, specifically when running R's C eval on each group (q7 and q8) in the db-benchmark, indicating a  slowness in the implementation of the code.[link to comment that reported Regression](https://github.com/Rdatatable/data.table/issues/4200)
+
+This is the [PR]( https://github.com/Rdatatable/data.table/pull/4558) that discusses the 
+[The regression was specifically related to the evaluation of C code within each group of data, specifically q7 and q8 in the "db-benchmark"](https://github.com/Rdatatable/data.table/issues/4200#issue-555186870)  which appears that the regression occurred during the evaluation of C code within these particular groups, indicating a performance issue or slowness in the implementation of the code.
+
+[The regression was fixed Regression by the addition of const int nth = getDTthreads]( https://github.com/Rdatatable/data.table/pull/4558/files)
+
+```{r,warning=FALSE,message=FALSE}
+
+library(atime)
+library(ggplot2)
+library(data.table)
+
+```
+
+```{r,warning=FALSE, message=FALSE}
+  tdir <- tempfile()
+  dir.create(tdir)
+  git2r::clone("https://github.com/Rdatatable/data.table", tdir )
+  
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+
+atime.list.4200 <- atime::atime_versions(
+pkg.path=tdir,
+pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
+      pkg_find_replace <- function(glob, FIND, REPLACE){
+        atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+      }
+      Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+      Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+      new.Package_ <- paste0(Package_, "_", sha)
+      pkg_find_replace(
+        "DESCRIPTION", 
+        paste0("Package:\\s+", old.Package),
+        paste("Package:", new.Package))
+      pkg_find_replace(
+        file.path("src","Makevars.*in"),
+        Package_regex,
+        new.Package_)
+      pkg_find_replace(
+        file.path("R", "onLoad.R"),
+        Package_regex,
+        new.Package_)
+      pkg_find_replace(
+        file.path("R", "onLoad.R"),
+        sprintf('packageVersion\\("%s"\\)', old.Package),
+        sprintf('packageVersion\\("%s"\\)', new.Package))
+      pkg_find_replace(
+        file.path("src", "init.c"),
+        paste0("R_init_", Package_regex),
+        paste0("R_init_", gsub("[.]", "_", new.Package_)))
+      pkg_find_replace(
+        "NAMESPACE",
+        sprintf('useDynLib\\("?%s"?', Package_regex),
+        paste0('useDynLib(', new.Package_))
+    },
+  N=10^seq(1,20),
+  setup={ 
+    set.seed(108)
+    d <- data.table(
+      id3 = sample(c(seq.int(N*0.9), sample(N*0.9, N*0.1, TRUE))),
+      v1 = sample(5L, N, TRUE),
+      v2 = sample(5L, N, TRUE))
+  },
+  expr=data.table:::`[.data.table`(d, , (max(v1)-min(v2)), by = id3),
+"Before"="15f0598b9828d3af2eb8ddc9b38e0356f42afe4f",
+  "Regression"="6f360be0b2a6cf425f6df751ca9a99ec5d35ed93", "ba32f3cba38ec270587e395f6e6c26a80be36be6")
+```
+
+
+```{r, warning=FALSE,message=FALSE}
+plot(atime.list.4200)+
+  labs(title = "groupby with dogroups (R expression) performance regression")
+
+png("atime.list.4200.png")
+plot(atime.list.4200)+
+  labs(title = "groupby with dogroups (R expression) performance regression")
+dev.off()
+
+```
+
+```{r,warning = FALSE, message = FALSE}
+atime.list.4440 <- atime::atime_versions(
+pkg.path=tdir,
+pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
+      pkg_find_replace <- function(glob, FIND, REPLACE){
+        atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+      }
+      Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+      Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+      new.Package_ <- paste0(Package_, "_", sha)
+      pkg_find_replace(
+        "DESCRIPTION", 
+        paste0("Package:\\s+", old.Package),
+        paste("Package:", new.Package))
+      pkg_find_replace(
+        file.path("src","Makevars.*in"),
+        Package_regex,
+        new.Package_)
+      pkg_find_replace(
+        file.path("R", "onLoad.R"),
+        Package_regex,
+        new.Package_)
+      pkg_find_replace(
+        file.path("R", "onLoad.R"),
+        sprintf('packageVersion\\("%s"\\)', old.Package),
+        sprintf('packageVersion\\("%s"\\)', new.Package))
+      pkg_find_replace(
+        file.path("src", "init.c"),
+        paste0("R_init_", Package_regex),
+        paste0("R_init_", gsub("[.]", "_", new.Package_)))
+      pkg_find_replace(
+        "NAMESPACE",
+        sprintf('useDynLib\\("?%s"?', Package_regex),
+        paste0('useDynLib(', new.Package_))
+    },
+  N= 10^seq(3,8),
+  setup={
+    set.seed(1L)
+    dt <- data.table(
+      a=sample(N,N))
+    setindex(dt, a)
+  },
+
+  expr=data.table:::shallow(dt),
+  "Before"="ad7b67c80a551b7a1e2ef8b73d6162ed7737c934",
+  "Regression"="752012f577f8e268bb6d0084ca39a09fa7fbc1c4", 
+  "Fixed"="9d3b9202fddb980345025a4f6ac451ed26a423be")
+```
+
+
+```{r}
+plot(atime.list.4440)+
+  labs(title = "Remove deep copy of indices from shallow #4440")
+
+png("atime.list.4440.png")
+plot(atime.list.4440)+
+  labs(title = "Remove deep copy of indices from shallow #4440")
+dev.off()
+```
+
+
+
+# **CONCLUSION**
+
+In this blog post, we have delved into the use of the atime code to compare the asymptotic time and memory usage of different versions of the data.table package. Specifically, we explored the comparisons between the "Before," "Regression," and "Fixed" versions, as well as different versions implementing the same computation.
+
+By employing benchmarking methodologies like atime, we gained valuable insights into the performance characteristics of the data.table package. This allowed us to identify and address performance regressions, ensuring that each new version of the package has indeed solved the particular issue reported.
+
+Consider doing the exercises below, if you want practice using atime.
+
+
+
+
