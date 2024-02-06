@@ -115,7 +115,90 @@ D. [Link to my atime code showing this Regression](https://github.com/DorisAmoak
 
 ![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.sys.4440.png)
 
-I utilize a GitHub Action to run my forked repository of data.table explain above. You can find the repository by [clicking here](https://github.com/DorisAmoakohene/data.table). 
+
+# 4. 
+A. Reported the issue : GForce optimisation could be more smart,
+https://github.com/Rdatatable/data.table/issues/3815
+
+B. The issue was reported to check the efficiency of the original code (now = DT[, .(range_v1_v2=max(v1, na.rm=TRUE)-min(v2, na.rm=TRUE)), by=id3]), https://github.com/Rdatatable/data.table/issues/3815#issuecomment-1509890222
+
+C. This Regression is still Open
+
+# 5. 
+A. [frollmax is slow on descending sequences](https://github.com/Rdatatable/data.table/issues/5923)
+
+B. [This issue refers to the slower performance of the data.table::frollmax() function when applied to descending sequences compared to ascending sequences.](https://github.com/Rdatatable/data.table/issues/5923#issue-2104222037)
+
+C. This issue is still Open
+
+# 6. 
+ A. [faster bmerge numeric and roll #5187](https://github.com/Rdatatable/data.table/pull/5187#issuecomment-1881694259)
+ 
+ B. [The problem is trying to optimize the performance of aligning two datasets based on date values, and they are experimenting with different approaches using data frames and data tables.](https://github.com/Rdatatable/data.table/pull/5187#issuecomment-947107447)
+ 
+ C. This PR is still Open
+ 
+
+ # 7. 
+  A. [.data.table is very slow with a single integer #5636 ](https://github.com/Rdatatable/data.table/issues/5636 )
+  
+  B. This is issue about suggests  performance problem when using the data.table package with a single integer. The issue can be confirmed from this reported [ code snippet ](https://github.com/Rdatatable/data.table/issues/5923#issue-2104222037) 
+  
+  C. This issue is currently open
+  
+
+ # 8.
+  A. [Grouped calculations of list columns are very slow #5428](https://github.com/Rdatatable/data.table/issues/5428)
+  
+  B. This issue is about the slow performance of creating a list column in a [grouped calculation using the data.table package.] (https://github.com/Rdatatable/data.table/issues/5428#issue-1327797930)
+
+  C.  This issue is still open
+
+  
+# 9.
+
+A.[implement frev() - base::rev() that allocates less #5885](https://github.com/Rdatatable/data.table/issues/5885)
+
+B. [implement frev as fast base::rev alternative #5907](https://github.com/Rdatatable/data.table/pull/5907)
+
+C. This PR was fixed by introducing an [export(frev)](https://github.com/Rdatatable/data.table/pull/5907/files)
+
+
+# 10. 
+
+A.[locating performance improvement in NEWS #5900](https://github.com/Rdatatable/data.table/issues/5900)
+
+B.benchmark of this PR vs master and 1.14.0,  using 1, 2, 4, 8 threads, to measure the efficiency of gmin parallizle per group [#5916](https://github.com/Rdatatable/data.table/pull/5916)
+
+C. Fixed by #5916 by adding this line [int *restrict ansd = INTEGER(ans);const int *restrict xd = INTEGER(x); to the code](https://github.com/Rdatatable/data.table/pull/5916/files)
+
+D. 
+
+
+# 11.
+
+A.Major performance drop of keyed := when index is] present#4311](https://github.com/Rdatatable/data.table/issues/4311)
+
+B. The issue reported a significant performance drop when using the dt[selector, foo := bar] syntax on a keyed data.table when an index is present.[#4440](https://github.com/Rdatatable/data.table/pull/4440)
+
+C. The issue was resolved by introducing a new internal function called `shallow()`. [This function avoids creating a deep copy of secondary indices, leading to improved performance.](https://github.com/Rdatatable/data.table/pull/4440/files)
+
+
+
+
+#5426
+A.[Move some setDT validation checks to C #5427](https://github.com/Rdatatable/data.table/pull/5427)
+
+B. [setDT extremely slow for very wide input #5426](https://github.com/Rdatatable/data.table/issues/5426)
+
+C. Fixed by 
+
+
+
+
+
+
+## I utilize a GitHub Action to run my forked repository of data.table explain above. You can find the repository by [clicking here](https://github.com/DorisAmoakohene/data.table). 
 
 ![The GitHub Action generates a plot illustrating the asymptotic timing of the issues from GitHub above](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/tests_all_facet.png) 
 
@@ -123,6 +206,8 @@ By adding the commit id this is how the plot should look
 ![Example of a plot graph you should see](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/new%20action/tests_all_facet.png)
 
 see other plot [HERE](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/tree/main/new%20action)
+
+
 
 
 # Efficiency of the Data.Table and other Packages
