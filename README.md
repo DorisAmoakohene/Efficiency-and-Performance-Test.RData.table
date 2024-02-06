@@ -113,7 +113,7 @@ C. [Fixes Regression by passing shallow(dt.s4) to the isS4() function](https://g
 
 D. [Link to my atime code showing this Regression](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/Remove%20deep%20copy%20of%20indices%20from%20shallow.Rmd)
 
-![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.sys.4440.png)
+![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440]()
 
 
 # 4. 
@@ -186,7 +186,7 @@ C. This PR was fixed by introducing an [export(frev)](https://github.com/Rdatata
 
 D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/implement%20frev().Rmd)
 
-![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/result.frev.png)
+![Plot showing the the memory and time metrics of the issue from the atime]()
 
 
 
