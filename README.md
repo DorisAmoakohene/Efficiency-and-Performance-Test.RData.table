@@ -117,12 +117,15 @@ D. [Link to my atime code showing this Regression](https://github.com/DorisAmoak
 
 
 # 4. 
-A. Reported the issue : GForce optimisation could be more smart,
-https://github.com/Rdatatable/data.table/issues/3815
+A. [Reported the issue : GForce optimisation could be more smart](https://github.com/Rdatatable/data.table/issues/3815)
 
-B. The issue was reported to check the efficiency of the original code (now = DT[, .(range_v1_v2=max(v1, na.rm=TRUE)-min(v2, na.rm=TRUE)), by=id3]), https://github.com/Rdatatable/data.table/issues/3815#issuecomment-1509890222
+B. The issue was reported to check the efficiency of the original code [(now = DT[, .(range_v1_v2=max(v1, na.rm=TRUE)-min(v2, na.rm=TRUE)), by=id3 ])](https://github.com/Rdatatable/data.table/issues/3815#issuecomment-1509890222)
 
 C. This Regression is still Open
+
+D. [link to my atime code visualizing the issue]()
+
+![Plot showing the the memory and time metrics of the issue from the atime]()
 
 # 5. 
 A. [frollmax is slow on descending sequences](https://github.com/Rdatatable/data.table/issues/5923)
@@ -131,20 +134,33 @@ B. [This issue refers to the slower performance of the data.table::frollmax() fu
 
 C. This issue is still Open
 
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/data.table%20frollmax%20on%20descending.Rmd)
+
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/result.frollmax.png)
+
+
 # 6. 
  A. [faster bmerge numeric and roll #5187](https://github.com/Rdatatable/data.table/pull/5187#issuecomment-1881694259)
  
  B. [The problem is trying to optimize the performance of aligning two datasets based on date values, and they are experimenting with different approaches using data frames and data tables.](https://github.com/Rdatatable/data.table/pull/5187#issuecomment-947107447)
  
  C. This PR is still Open
- 
 
+ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/faster%20bmerge%20numeric%20and%20roll.Rmd)
+
+![Plot showing the the memory and time metrics of the issue from the atime]()
+
+ 
  # 7. 
   A. [.data.table is very slow with a single integer #5636 ](https://github.com/Rdatatable/data.table/issues/5636 )
   
   B. This is issue about suggests  performance problem when using the data.table package with a single integer. The issue can be confirmed from this reported [ code snippet ](https://github.com/Rdatatable/data.table/issues/5923#issue-2104222037) 
   
   C. This issue is currently open
+
+  D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/data.table%20is%20very%20slow%20with%20a%20single%20column%20%235650.Rmd)
+
+![Plot showing the the memory and time metrics of the issue from the atime]()
   
 
  # 8.
@@ -153,6 +169,10 @@ C. This issue is still Open
   B. This issue is about the slow performance of creating a list column in a [grouped calculation using the data.table package.] (https://github.com/Rdatatable/data.table/issues/5428#issue-1327797930)
 
   C.  This issue is still open
+
+  D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/Grouped%20calculations%20of%20list%20columns%20are%20very%20slow%20%235428.Rmd)
+
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.5428.png)
 
   
 # 9.
@@ -163,6 +183,11 @@ B. [implement frev as fast base::rev alternative #5907](https://github.com/Rdata
 
 C. This PR was fixed by introducing an [export(frev)](https://github.com/Rdatatable/data.table/pull/5907/files)
 
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/implement%20frev().Rmd)
+
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/result.frev.png)
+
+
 
 # 10. 
 
@@ -172,7 +197,10 @@ B.benchmark of this PR vs master and 1.14.0,  using 1, 2, 4, 8 threads, to measu
 
 C. Fixed by #5916 by adding this line [int *restrict ansd = INTEGER(ans);const int *restrict xd = INTEGER(x); to the code](https://github.com/Rdatatable/data.table/pull/5916/files)
 
-D. 
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/locating%20performance%20improvement%20in%20NEWS%20%235900.Rmd)
+
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.result.5900.png)
+
 
 
 # 11.
@@ -183,15 +211,24 @@ B. The issue reported a significant performance drop when using the dt[selector,
 
 C. The issue was resolved by introducing a new internal function called `shallow()`. [This function avoids creating a deep copy of secondary indices, leading to improved performance.](https://github.com/Rdatatable/data.table/pull/4440/files)
 
+D. [link to my atime code visualizing the issue]()
+
+![Plot showing the the memory and time metrics of the issue from the atime]()
 
 
 
-#5426
+# 12.
+
 A.[Move some setDT validation checks to C #5427](https://github.com/Rdatatable/data.table/pull/5427)
 
 B. [setDT extremely slow for very wide input #5426](https://github.com/Rdatatable/data.table/issues/5426)
 
 C. Fixed by 
+
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/setDT%20extremely%20slow%20for%20very%20wide%20input%20%235426.Rmd)
+
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.5427.png)
+
 
 
 
