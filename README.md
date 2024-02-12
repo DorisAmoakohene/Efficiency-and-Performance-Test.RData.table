@@ -113,7 +113,7 @@ C. [Fixes Regression by passing shallow(dt.s4) to the isS4() function](https://g
 
 D. [Link to my atime code showing this Regression](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/Remove%20deep%20copy%20of%20indices%20from%20shallow.Rmd)
 
-![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440]()
+![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.4440.png)
 
 
 # 4. 
