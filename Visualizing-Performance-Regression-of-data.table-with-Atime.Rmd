@@ -68,7 +68,7 @@ NB: Set up the necessary environment and dependencies, ensuring that the data.ta
 Run the GitHub Action by writing tests in inst/atime/tests.R. 
 
 
-# Lets Run some examples to see how this work.
+# Lets run some examples to see how this work.
 
 The first example we will discuss is an issue reported on a performance regression when performing group computations, specifically when running R's C eval on each group (q7 and q8) in the db-benchmark, indicating a  slowness in the implementation of the code.[link to comment that reported Regression](https://github.com/Rdatatable/data.table/issues/4200)
 
@@ -155,9 +155,33 @@ plot(atime.list.4200)+
 dev.off()
 
 ```
+The graph above  visualizes the  groupby operation with dogroups  issue. 
+
+Title: “Groupby with dogroups (R expression) performance regression.”
+
+Comparison: The graph compares the median time in milliseconds required to execute the operation before and after fixing a regression issue.
+
+1. X-Axis (N): Represents the size of the data (N) on a logarithmic scale.
+
+2.Y-Axis: Represents the median time in milliseconds (logarithmic scale).
+
+*Lines:*
+
+3. Red Line (“Before”): Indicates performance before fixing the regression.
+
+4. Green Line (“Fixed”): Shows improved performance after fixing.
+
+5. Blue Line (“Regression”): Represents an ideal or target performance level.
+
+In both graphs, as data size (N) increases, there’s an initial increase in median time, but it significantly reduces fix, indicating performance improvement. The regression issue was successfully addressed
+
+
+# Example Two
+
+In the specific case of issue *#5366*, there was a significant slowdown in the performance of data.table's time-based rolling aggregation compared to pandas' rolling aggregation. The cause of this regression was identified to be related to the addition of the snprintf function in the assign.c file. To address this issue, a fix was implemented by creating the targetDesc function and adding the snprintf function in the assign.c file. This fix resolved the regression and improved the performance of the time-based rolling aggregation in data.table. 
 
 ```{r,warning = FALSE, message = FALSE}
-atime.list.4440 <- atime::atime_versions(
+atime.list.5366 <- atime::atime_versions(
 pkg.path=tdir,
 pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
       pkg_find_replace <- function(glob, FIND, REPLACE){
@@ -191,30 +215,49 @@ pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
         sprintf('useDynLib\\("?%s"?', Package_regex),
         paste0('useDynLib(', new.Package_))
     },
-  N= 10^seq(3,8),
-  setup={
-    set.seed(1L)
+  N= 10^seq(1,4),
+  setup={ 
+    set.seed(123L)
     dt <- data.table(
-      a=sample(N,N))
-    setindex(dt, a)
+      id = seq_len(N),
+      val = rnorm(N))
+    dt
   },
-
-  expr=data.table:::shallow(dt),
-  "Before"="ad7b67c80a551b7a1e2ef8b73d6162ed7737c934",
-  "Regression"="752012f577f8e268bb6d0084ca39a09fa7fbc1c4", 
-  "Fixed"="9d3b9202fddb980345025a4f6ac451ed26a423be")
+ expr=data.table:::`[.data.table`(dt, , .(vs = (sum(val))), by = .(id)),
+  "Before"="be2f72e6f5c90622fe72e1c315ca05769a9dc854",
+  "Regression"="e793f53466d99f86e70fc2611b708ae8c601a451", 
+  "Fixed"="58409197426ced4714af842650b0cc3b9e2cb842") 
 ```
 
 
-```{r}
-plot(atime.list.4440)+
-  labs(title = "Remove deep copy of indices from shallow #4440")
+```{r,warning=FALSE,message=FALSE }
+plot(atime.list.5366)+
+  labs(title = "Significantly slower performance time-based rolling")
 
-png("atime.list.4440.png")
-plot(atime.list.4440)+
-  labs(title = "Remove deep copy of indices from shallow #4440")
+png("atime.list.5366.png")
+plot(atime.list.5366)+
+  labs(title = "Significantly slower performance time-based rolling")
 dev.off()
+
 ```
+
+
+Significantly Slower Performance Time-Based Rolling
+Graph Overview:
+The graph depicts the performance improvement over time after fixing a regression issue
+Y-axis: Represents time in milliseconds.
+X-axis: Represents the sample size N (ranging from 10 to 10,000).
+
+*Three lines:*
+
+Red Line (“Before Fixed”): Indicates performance before fixing the regression.
+Green Line (“Fixed”): Represents improved performance after fixing.
+Blue Line (“Regression”): Shows the regression issue.
+The red line initially increases steeply with larger N, indicating slow performance.
+After fixing, the green line shows significantly reduced processing time.
+
+
+In summary, the graph visually demonstrates how fixing the regression issue led to improved performance in time-based rolling operations. The green line represents the desired outcome, showing faster processing times for larger sample sizes. 
 
 
 
@@ -225,6 +268,11 @@ In this blog post, we have delved into the use of the atime code to compare the 
 By employing benchmarking methodologies like atime, we gained valuable insights into the performance characteristics of the data.table package. This allowed us to identify and address performance regressions, ensuring that each new version of the package has indeed solved the particular issue reported.
 
 Consider doing the exercises below, if you want practice using atime.
+
+Consider visiting the this [link](https://github.com/Rdatatable/data.table/issues/4311) to gain a comprehensive understanding of regression and attempt to interpret it using atime.
+The issue was fixed [here](https://github.com/Rdatatable/data.table/pull/4440) 
+By doing so, you will be able to replicate graphs similar to the ones mentioned earlier.
+
 
 
 

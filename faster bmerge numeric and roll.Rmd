@@ -50,6 +50,7 @@ library(data.table)
 ```
 
 ```{r}
+
   tdir <- tempfile()
   dir.create(tdir)
   git2r::clone("https://github.com/Rdatatable/data.table", tdir)
@@ -93,7 +94,7 @@ atime.list.5187 <- atime::atime_versions(
       sprintf('useDynLib\\("?%s"?', Package_regex),
       paste0('useDynLib(', new.Package_))
   },
-  N=10^seq(1,20),
+  N=10^seq(1,7),
   setup={ 
     setDTthreads(1)
     x.df <- data.frame(date = as.POSIXct("2000-1-1") + 1:N, price = rnorm(N))
@@ -123,5 +124,52 @@ dev.off()
 
 
 
-```
+atime.list.5187 <- atime::atime_versions(
+  pkg.path=tdir,
+  pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
+    pkg_find_replace <- function(glob, FIND, REPLACE){
+      atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+    }
+    Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+    Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+    new.Package_ <- paste0(Package_, "_", sha)
+    pkg_find_replace(
+      "DESCRIPTION", 
+      paste0("Package:\\s+", old.Package),
+      paste("Package:", new.Package))
+    pkg_find_replace(
+      file.path("src","Makevars.*in"),
+      Package_regex,
+      new.Package_)
+    pkg_find_replace(
+      file.path("R", "onLoad.R"),
+      Package_regex,
+      new.Package_)
+    pkg_find_replace(
+      file.path("R", "onLoad.R"),
+      sprintf('packageVersion\\("%s"\\)', old.Package),
+      sprintf('packageVersion\\("%s"\\)', new.Package))
+    pkg_find_replace(
+      file.path("src", "init.c"),
+      paste0("R_init_", Package_regex),
+      paste0("R_init_", gsub("[.]", "_", new.Package_)))
+    pkg_find_replace(
+      "NAMESPACE",
+      sprintf('useDynLib\\("?%s"?', Package_regex),
+      paste0('useDynLib(', new.Package_))
+  },
+  N=10^seq(1,7),
+  setup={ 
+    setDTthreads(1)
+    x.df <- data.frame(date = as.POSIXct("2000-1-1") + 1:N, price = rnorm(N))
+    x.dt <- data.table(x.df, key = "date")
+    
+    y.df <- data.frame(date = sort(sample(x.df$date, N)), adjustment = runif(N))
+    y.dt <- data.table(y.df, key = "date")
+    Value = y.dt[x.dt, price+adjustment, roll=TRUE]
+  },
+  
+  expr=data.table:::`[.data.table`(x.dt, , price.adj := Value),
+  "Before"="eb1a309e344d1a630cf03133cfa8148a6ab54eab",
+  "Regression"="e40456fef569d1153fbe203f4fb97dfa4377f205") 
 

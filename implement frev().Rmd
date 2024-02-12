@@ -106,6 +106,8 @@ plot(atime.result.frev)+
 dev.off()
 
 ```
+
+
 ```{r}
 result.frev <- atime::atime(
   N=10^seq(1,7),
