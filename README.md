@@ -125,7 +125,7 @@ C. This Regression is still Open
 
 D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/GForce%20optimisation%20could%20be%20more%20smart%20%233815.Rmd)
 
-![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/result.3815.pdf)
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/3815%23Gforce.png)
 
 
 # 5. 
