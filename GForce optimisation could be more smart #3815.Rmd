@@ -1,0 +1,63 @@
+---
+title: 'GForce optimisation could be more smart #3815'
+author: "Doris Afriyie Amoakohene"
+date: "2024-02-12"
+output: html_document
+---
+
+
+```{r}
+
+library(atime)
+library(ggplot2)
+library(data.table)
+library(microbenchmark)
+```
+
+
+```{r}
+library(data.table)
+n = 1e7
+DT=data.table(v1=rnorm(n), v2=rnorm(n), id3=sample(1e4, n, TRUE))
+bench::mark(
+  now = DT[, .(range_v1_v2=max(v1, na.rm=TRUE)-min(v2, na.rm=TRUE)), by=id3],
+  gforced = DT[, .(max(v1, na.rm=TRUE), min(v2, na.rm=TRUE)), id3][, .(range_v1_v2=V1-V2), by=id3]
+)
+#> Warning: Some expressions had a GC in every iteration; so filtering is disabled.
+#> # A tibble: 2 × 6
+#>   expression      min   median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
+#> 1 now           316ms    328ms      3.05    40.3MB     0   
+#> 2 gforced       126ms    135ms      6.57     268MB     8.22
+```
+
+
+
+
+```{r}
+result.3815 <- atime::atime(
+  N=unique(as.integer(10^seq(1,7,l=100))),
+  setup={
+    DT=data.table(v1=rnorm(N), v2=rnorm(N), id3=sample(1e4, N, TRUE))
+  },
+  seconds.limit=0.001,
+  now = DT[, .(range_v1_v2=max(v1, na.rm=TRUE)-min(v2, na.rm=TRUE)), by=id3],
+  gforced = DT[, .(max(v1, na.rm=TRUE), min(v2, na.rm=TRUE)), id3][, .(range_v1_v2=V1-V2), by=id3]
+)
+```
+
+
+```{r}
+plot(result.3815)+
+  labs(title = "GForce optimisation could be more smart #3815")
+
+png("result.3815.png")
+plot(result.3815)+
+  labs(title = "GForce optimisation could be more smart #3815")
+dev.off()
+
+```
+
+
+```
+
