@@ -1,0 +1,124 @@
+---
+title: 'Merging by character columns is very slow #4733'
+output: html_document
+date: "2024-02-17"
+---
+
+
+Merging by character columns is very slow #4733
+
+```{r}
+library(data.table)
+#> Warning: package 'data.table' was built under R version 3.6.3
+library(dplyr)
+#> Warning: package 'dplyr' was built under R version 3.6.3
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:data.table':
+#> 
+#>     between, first, last
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(microbenchmark)
+#> Warning: package 'microbenchmark' was built under R version 3.6.2
+
+dfa_char <- data.table(id = as.character(seq_len(10000)))
+dfb_char <- data.table(id = as.character(seq_len(100000)), val = rnorm(100000))
+
+microbenchmark(
+  data.table = merge.data.table(dfa_char, dfb_char, by = "id", sort = FALSE),
+  dplyr = inner_join(dfa_char, dfb_char, by = "id"),
+  times = 1L
+)
+#> Unit: milliseconds
+#>        expr      min       lq     mean   median       uq      max neval
+#>  data.table 1774.640 1774.640 1774.640 1774.640 1774.640 1774.640     1
+#>       dplyr   35.852   35.852   35.852   35.852   35.852   35.852     1
+
+setkey(dfa_char, id)
+setkey(dfb_char, id)
+
+microbenchmark(
+  data.table = merge.data.table(dfa_char, dfb_char, by = "id", sort = FALSE),
+  dplyr = inner_join(dfa_char, dfb_char, by = "id"),
+  times = 1L
+)
+#> Unit: milliseconds
+#>        expr     min      lq    mean  median      uq     max neval
+#>  data.table  6.3679  6.3679  6.3679  6.3679  6.3679  6.3679     1
+#>       dplyr 56.9153 56.9153 56.9153 56.9153 56.9153 56.9153     1
+
+dfa_int <- data.table(id = seq_len(10000))
+dfb_int <- data.table(id = seq_len(100000), val = rnorm(100000))
+
+microbenchmark(
+  data.table = merge.data.table(dfa_int, dfb_int, by = "id", sort = FALSE),
+  dplyr = inner_join(dfa_int, dfb_int, by = "id"),
+  times = 1L
+)
+#> Unit: milliseconds
+#>        expr     min      lq    mean  median      uq     max neval
+#>  data.table  5.4953  5.4953  5.4953  5.4953  5.4953  5.4953     1
+#>       dplyr 14.6955 14.6955 14.6955 14.6955 14.6955 14.6955     1
+```
+
+
+```{r}
+
+
+library(atime)
+library(ggplot2)
+library(data.table)
+```
+
+```{r}
+atime.4733 <- atime::atime(
+  N = 10^seq(4,7),
+  setup = {
+    dfa_char <- data.table(id = as.character(seq_len(N)))
+    dfb_char <- data.table(id = as.character(seq_len(N)), val = rnorm(N))
+    dfa_char_set<- setkey(dfa_char, id)
+    dfb_char_set<- setkey(dfb_char, id)
+    dfa_int <- data.table(id = seq_len(N))
+    dfb_int <- data.table(id = seq_len(N), val = rnorm(N))
+  },
+  seconds.limit = 0.01,
+  expr.list = list(
+    data.table = merge.data.table(dfa_char, dfb_char, by = "id", sort = FALSE),
+    dplyr = inner_join(dfa_char, dfb_char, by = "id"),
+    
+    data.table_set = merge.data.table(dfa_char_set, dfb_char_set, by = "id", sort = FALSE),
+    dplyr_set = inner_join(dfa_char_set, dfb_char_set, by = "id"),
+    
+    data.table_int = merge.data.table(dfa_int, dfb_int, by = "id", sort = FALSE),
+    dplyr_int = inner_join(dfa_int, dfb_int, by = "id")
+    
+  )
+)
+```
+
+
+
+
+```{r}
+png()
+plot(atime.4733)+
+  labs(title = "Merging by character columns is very slow #4733")
+
+png("atime.4733.png")
+plot(atime.4733)+
+  labs(title = "Merging by character columns is very slow #4733 ")
+dev.off()
+```
+
+
+
+
+
+
+```
+
