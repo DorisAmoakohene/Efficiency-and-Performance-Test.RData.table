@@ -167,7 +167,7 @@ Please Note : commit IDs or SHAs ("Before", "Regression", and "Fixed")  refer to
 
 ## Title: “Groupby with dogroups (R expression) performance regression.”
 
-![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4200](https://github.com/DorisAmoakohene/Efficiency-and-Pformance-Test.RData.table/blob/main/atime.list.4200.png)
+![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4200](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4200.png)
 
 The graph above  visualizes the  groupby operation with dogroups  issue. 
 
@@ -214,7 +214,7 @@ pkg.edit.fun = pkg.edit.fun,
 
 ## Significantly Slower Performance Time-Based Rolling
 
-![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5366](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.2.png)
+![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5366](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.5366.png)
 Graph Overview:
 The graph depicts the performance improvement over time after fixing a regression issue
 Y-axis: Represents time in milliseconds.
