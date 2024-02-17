@@ -1,0 +1,68 @@
+---
+title: 'Possible Slowdown when i is an S4 Object with sapply method #1438'
+output: html_document
+date: "2024-02-17"
+---
+
+Possible Slowdown when i is an S4 Object with sapply method #1438
+
+```{r}
+library(Matrix)
+library(data.table)
+x <- Matrix(1:1e6, nrow=1e3, ncol=1e3)
+colnames(x) <- rownames(x) <- 1:1e3
+dt.rowInd <- data.table(sink=1:900)
+system.time(dt.rowInd[1:nrow(dt.rowInd),x[as.character(sink),]])
+#   user  system elapsed 
+#  0.027   0.004   0.031 
+system.time(dt.rowInd[,x[as.character(sink),]])
+#   user  system elapsed 
+#  4.801   0.075   4.878 
+```
+
+```{r}
+
+
+library(atime)
+library(ggplot2)
+library(data.table)
+library(Matrix)
+
+```
+
+
+```{r}
+
+result.1438 <- atime::atime(
+  
+  N = 10^seq(1,7),
+  setup = {
+    x <- Matrix(N, nrow=1000, ncol=1000)
+    colnames(x) <- rownames(x) <- 1:1000  
+    dt.rowInd <- data.table(sink=1:900)
+  },
+  seconds.limit = 1,
+  expr.list = list(
+    executionTime1 = dt.rowInd[1:nrow(dt.rowInd),x[as.character(sink),]],
+    
+    executionTime2 = dt.rowInd[,x[as.character(sink),]]
+  )
+)
+```
+
+
+```{r} 
+png()
+
+plot(result.1438)+
+  labs(title = "Possible Slowdown when i is an S4 Object with sapply method #1438 ")
+
+png("Possible Slowdown when i is an S4 Object with sapply method #1438.png")
+plot(result.1438)+
+  labs(title = "Possible Slowdown when i is an S4 Object with sapply method #1438 ")
+dev.off()
+```
+
+
+```
+
