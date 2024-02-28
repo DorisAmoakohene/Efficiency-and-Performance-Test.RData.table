@@ -72,17 +72,18 @@ atime.list.4849 <- atime::atime_versions(
       paste0('useDynLib(', new.Package_))
   },
   seconds.limit=1,
-  N=10^seq(3,9),
+  N=10^seq(1,9),
   setup={
+    K = 10^seq(1,2)
     DT = list()
-    DT[["id3"]] = factor(sample(sprintf("id%010d",1:(N/100)), N, TRUE))
+    DT[["id3"]] = factor(sample(sprintf("id%010d",1:(N/K)), N, TRUE))
     DT[["v3"]] =  round(runif(N,max=100),6)
     setDT(DT)
   },
-  expr= data.table:::`[.data.table`(DT, , .(v3=mean(v3, na.rm=TRUE)), by=id3, verbose=TRUE),
+  expr= data.table:::`[.data.table`(DT,, .(v3=mean(v3)), by=id3, verbose=TRUE),
   "Before"="616dfc5093b0f7eea6aafbc1ecc744a541088b12",#https://github.com/Rdatatable/data.table/tree/616dfc5093b0f7eea6aafbc1ecc744a541088b12
-  "Regression"="5b04b0ef9691f71fcb9f13658c0f7b5b30944a1f",#https://github.com/Rdatatable/data.table/commit/5b04b0ef9691f71fcb9f13658c0f7b5b30944a1f
-  "fixed"="ec1259af1bf13fc0c96a1d3f9e84d55d8106a9a4")#https://github.com/Rdatatable/data.table/commit/ec1259af1bf13fc0c96a1d3f9e84d55d8106a9a4
+  "Regression"="3ca0dbfb26c59b047acd6b0c5b400b6222ad6f6b",#https://github.com/Rdatatable/data.table/pull/4851/commits/3ca0dbfb26c59b047acd6b0c5b400b6222ad6f6b
+  "fixed"="3bfe51ec74e26045836abd9c2e16144beeba8761")#https://github.com/Rdatatable/data.table/commit/3bfe51ec74e26045836abd9c2e16144beeba8761
 ```
 
 

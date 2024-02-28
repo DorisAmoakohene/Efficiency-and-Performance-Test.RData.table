@@ -58,26 +58,32 @@ atime.list.5167 <- atime::atime_versions(
       sprintf('useDynLib\\("?%s"?', Package_regex),
       paste0('useDynLib(', new.Package_))
   },
-  N=10^seq(1,20),
+  N=10^seq(1,7),
   setup={
     setDTthreads(1L)
     set.seed(373)
-    x = sample(as.double(seq.int(1e7)))
+    x = seq.int(N)
     },
-  expr=data.table:::`[.data.table`(topn(x, N, decreasing = TRUE),topn(x, N, decreasing = TRUE),forder(x, decreasing = TRUE, 1:N)),
+  expr=data.table:::forder(x,decreasing=TRUE, 1:N ),
                                            
-  "Before"="20b7f6a7716d67fce9c00b2253a310be46650386",#https://Rdatatable/data.table/commit/20b7f6a7716d67fce9c00b2253a310be46650386
-  "Regression"="78502c76629396b15fc09be37caf62df6acb5831") #https://github.com/Rdatatable/data.table/commit/78502c76629396b15fc09be37caf62df6acb5831
+  "Before"="b972e136e17a07d43a965bfb12f3e5b67a70434a",#https://github.com/Rdatatable/data.table/pull/5167/commits/b972e136e17a07d43a965bfb12f3e5b67a70434a
+  "Regression"="13caa28dd41621bedb4720e29acda660416465b8") #https://github.com/Rdatatable/data.table/tree/13caa28dd41621bedb4720e29acda660416465b8
   #"Fixed"="ba32f3cba38ec270587e395f6e6c26a80be36be6")#https://github.com/Rdatatable/data.table/commit/ba32f3cba38ec270587e395f6e6c26a80be36be6,link to the id that fixed the regression 
 ```
 
+
+
 ```{r}
+library(ggplot2)
+
+
+png()
 plot(atime.list.5167)+
-  labs(title = "groupby with dogroups (R expression) performance regression")
+  labs(title = "Topn doing order |> head/tail #5167")
 
 png("atime.list.5167.png")
 plot(atime.list.5167)+
-  labs(title = "groupby with dogroups (R expression) performance regression")
+  labs(title = "Topn doing order |> head/tail #5167")
 dev.off()
 ```
 

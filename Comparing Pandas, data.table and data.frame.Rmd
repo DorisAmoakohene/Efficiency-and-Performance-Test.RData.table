@@ -1,0 +1,120 @@
+---
+title: "Comparing Pandas, data.table and data.frame"
+output: html_document
+date: "2024-02-25"
+---
+
+
+
+
+```{r setup, include = FALSE}
+library(data.table)
+library(atime)
+library(ggplot2)
+library(reticulate)
+virtualenv_create("fm-proj")
+use_virtualenv("fm-proj", required = F)
+
+```
+
+
+
+```{r}
+## data.table run
+#$ R --vanilla
+require(data.table)
+N=2e9; K=100
+set.seed(1)
+DT <- data.table(
+  id1 = sample(sprintf("id%03d",1:K), N, TRUE),      # large groups (char)
+  id2 = sample(sprintf("id%03d",1:K), N, TRUE),      # large groups (char)
+  id3 = sample(sprintf("id%010d",1:(N/K)), N, TRUE), # small groups (char)
+  id4 = sample(K, N, TRUE),                          # large groups (int)
+  id5 = sample(K, N, TRUE),                          # large groups (int)
+  id6 = sample(N/K, N, TRUE),                        # small groups (int)
+  v1 =  sample(5, N, TRUE),                          # int in range [1,5]
+  v2 =  sample(5, N, TRUE),                          # int in range [1,5]
+  v3 =  sample(round(runif(100,max=100),4), N, TRUE) # numeric e.g. 23.5749
+)
+cat("GB =", round(sum(gc()[,2])/1024, 3), "\n")
+system.time( DT[, sum(v1), keyby=id1] )
+system.time( DT[, sum(v1), keyby=id1] )
+system.time( DT[, sum(v1), keyby="id1,id2"] )
+system.time( DT[, sum(v1), keyby="id1,id2"] )
+system.time( DT[, list(sum(v1),mean(v3)), keyby=id3] )
+system.time( DT[, list(sum(v1),mean(v3)), keyby=id3] )
+system.time( DT[, lapply(.SD, mean), keyby=id4, .SDcols=7:9] )
+system.time( DT[, lapply(.SD, mean), keyby=id4, .SDcols=7:9] )
+system.time( DT[, lapply(.SD, sum), keyby=id6, .SDcols=7:9] )
+system.time( DT[, lapply(.SD, sum), keyby=id6, .SDcols=7:9] )
+
+## dplyr run
+#$ R --vanilla
+require(dplyr)
+N=2e9; K=100
+set.seed(1)
+DF <- data.frame(stringsAsFactors=FALSE,
+  id1 = sample(sprintf("id%03d",1:K), N, TRUE),
+  id2 = sample(sprintf("id%03d",1:K), N, TRUE),
+  id3 = sample(sprintf("id%010d",1:(N/K)), N, TRUE),
+  id4 = sample(K, N, TRUE),                          
+  id5 = sample(K, N, TRUE),                         
+  id6 = sample(N/K, N, TRUE),                       
+  v1 =  sample(5, N, TRUE),                         
+  v2 =  sample(5, N, TRUE),                       
+  v3 =  sample(round(runif(100,max=100),4), N, TRUE)
+)
+cat("GB =", round(sum(gc()[,2])/1024, 3), "\n")
+system.time( DF %>% group_by(id1) %>% summarise(sum(v1)) )
+system.time( DF %>% group_by(id1) %>% summarise(sum(v1)) )
+system.time( DF %>% group_by(id1,id2) %>% summarise(sum(v1)) )
+system.time( DF %>% group_by(id1,id2) %>% summarise(sum(v1)) )
+system.time( DF %>% group_by(id3) %>% summarise(sum(v1),mean(v3)) )
+system.time( DF %>% group_by(id3) %>% summarise(sum(v1),mean(v3)) )
+system.time( DF %>% group_by(id4) %>% summarise_each(funs(mean), 7:9) )
+system.time( DF %>% group_by(id4) %>% summarise_each(funs(mean), 7:9) )
+system.time( DF %>% group_by(id6) %>% summarise_each(funs(sum), 7:9) )
+system.time( DF %>% group_by(id6) %>% summarise_each(funs(sum), 7:9) )
+```
+
+```{python}
+#$ python3
+import pandas as pd
+import numpy as np
+import timeit
+
+# randChar is workaround for MemoryError in mtrand.RandomState.choice
+# http://stackoverflow.com/questions/25627161/how-to-solve-memory-error-in-mtrand-randomstate-choice
+def randChar(f, numGrp, N) :
+   things = [f%x for x in range(numGrp)]
+   return [things[x] for x in np.random.choice(numGrp, N)]
+
+def randFloat(numGrp, N) :
+   things = [round(100*np.random.random(),4) for x in range(numGrp)]
+   return [things[x] for x in np.random.choice(numGrp, N)]
+
+N=int(1e9)
+K=100
+DF = pd.DataFrame({
+  'id1' : randChar("id%03d", K, N),       # large groups (char)
+  'id2' : randChar("id%03d", K, N),       # large groups (char)
+  'id3' : randChar("id%010d", N//K, N),   # small groups (char)
+  'id4' : np.random.choice(K, N),         # large groups (int)
+  'id5' : np.random.choice(K, N),         # large groups (int)
+  'id6' : np.random.choice(N//K, N),      # small groups (int)
+  'v1' :  np.random.choice(5, N),         # int in range [1,5]
+  'v2' :  np.random.choice(5, N),         # int in range [1,5]
+  'v3' :  randFloat(100,N)                # numeric e.g. 23.5749
+})
+timeit.Timer("DF.groupby(['id1']).agg({'v1':'sum'})"                            ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id1']).agg({'v1':'sum'})"                            ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id1','id2']).agg({'v1':'sum'})"                      ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id1','id2']).agg({'v1':'sum'})"                      ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id3']).agg({'v1':'sum', 'v3':'mean'})"               ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id3']).agg({'v1':'sum', 'v3':'mean'})"               ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id4']).agg({'v1':'mean', 'v2':'mean', 'v3':'mean'})" ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id4']).agg({'v1':'mean', 'v2':'mean', 'v3':'mean'})" ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id6']).agg({'v1':'sum', 'v2':'sum', 'v3':'sum'})"    ,"from __main__ import DF").timeit(1)
+timeit.Timer("DF.groupby(['id6']).agg({'v1':'sum', 'v2':'sum', 'v3':'sum'})"    ,"from __main__ import DF").timeit(1)
+```
+

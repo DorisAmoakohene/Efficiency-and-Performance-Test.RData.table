@@ -1,5 +1,5 @@
 test.list <- list(
-  shallow.4440 = list(
+  issue5424 = list(
     pkg.edit.fun=quote(function(old.Package, new.Package, sha, new.pkg.path){
       
       pkg_find_replace <- function(glob, FIND, REPLACE){

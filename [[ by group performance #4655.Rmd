@@ -99,19 +99,18 @@ atime.list.4655 <- atime::atime_versions(
       sprintf('useDynLib\\("?%s"?', Package_regex),
       paste0('useDynLib(', new.Package_))
   },
-  
-  N=10^seq(1,7),
+  N=seq(10, 500, 100),
   setup={ 
     set.seed(123)
     dt = data.table(ordered_id = seq_len(N),
                     unordered_id = sample(N),
-                    value = replicate(n, data.table(val1 = sample(40L)), simplify = FALSE))
+                    value = replicate(N, data.table(val1 = sample(40)), simplify = FALSE))
   },
   
   expr=data.table:::`[.data.table`(dt, , value[[1L]], by = unordered_id),
-  "Before"="a8ec94484d2cc375d8295a94bacc5353576c238a",#https://github.com/Rdatatable/data.table/commit/a8ec94484d2cc375d8295a94bacc5353576c238a
-  "Regression"="2dfd05f9fbddc7a6af97b8373e4bddc7262f7588", #https://github.com/Rdatatable/data.table/pull/4655/commits/2dfd05f9fbddc7a6af97b8373e4bddc7262f7588
-  "Fixed"="93967418ee0e40370ce9d4c4b63bf599e4ef1ecd") #https://github.com/Rdatatable/data.table/commit/93967418ee0e40370ce9d4c4b63bf599e4ef1ecd
+  #"Before"="8c5042ca9aa5c6217b460fa5e8bf01003c7be358",#https://github.com/Rdatatable/data.table/commit/8c5042ca9aa5c6217b460fa5e8bf01003c7be358
+  "Regression"="06c43b102f4b97ec91cb14a0c1631f771a9a0414", #https://github.com/Rdatatable/data.table/tree/06c43b102f4b97ec91cb14a0c1631f771a9a0414
+  "Fixed"="a8ec94484d2cc375d8295a94bacc5353576c238a") #https://github.com/Rdatatable/data.table/commit/a8ec94484d2cc375d8295a94bacc5353576c238a
 ```
 
 
@@ -128,4 +127,55 @@ dev.off()
 
 ```
 ```
+
+
+atime.list.4655 <- atime::atime_versions(
+  pkg.path=tdir,
+  pkg.edit.fun=function(old.Package, new.Package, sha, new.pkg.path){
+    pkg_find_replace <- function(glob, FIND, REPLACE){
+      atime::glob_find_replace(file.path(new.pkg.path, glob), FIND, REPLACE)
+    }
+    Package_regex <- gsub(".", "_?", old.Package, fixed=TRUE)
+    Package_ <- gsub(".", "_", old.Package, fixed=TRUE)
+    new.Package_ <- paste0(Package_, "_", sha)
+    pkg_find_replace(
+      "DESCRIPTION", 
+      paste0("Package:\\s+", old.Package),
+      paste("Package:", new.Package))
+    pkg_find_replace(
+      file.path("src","Makevars.*in"),
+      Package_regex,
+      new.Package_)
+    pkg_find_replace(
+      file.path("R", "onLoad.R"),
+      Package_regex,
+      new.Package_)
+    pkg_find_replace(
+      file.path("R", "onLoad.R"),
+      sprintf('packageVersion\\("%s"\\)', old.Package),
+      sprintf('packageVersion\\("%s"\\)', new.Package))
+    pkg_find_replace(
+      file.path("src", "init.c"),
+      paste0("R_init_", Package_regex),
+      paste0("R_init_", gsub("[.]", "_", new.Package_)))
+    pkg_find_replace(
+      "NAMESPACE",
+      sprintf('useDynLib\\("?%s"?', Package_regex),
+      paste0('useDynLib(', new.Package_))
+  },
+  
+  N=seq(100, 500, 100),
+  setup={ 
+    set.seed(123)
+    dt = data.table(ordered_id = seq_len(N),
+                    unordered_id = sample(N),
+                    value = replicate(N, data.table(val1 = sample(40)), simplify = FALSE))
+  },
+  
+  expr=data.table:::`[.data.table`(dt, , value[[1L]], by = unordered_id),
+  "Before"="dadf52892ec66fe4861278eaeef0ef8d912e90ee",
+  "Regression"="f3470bce8d2097bb6b1e3a92b5e93169d97e1cad", 
+  "Fixed"="93967418ee0e40370ce9d4c4b63bf599e4ef1ecd") 
+
+https://github.com/Rdatatable/data.table/commit/f3470bce8d2097bb6b1e3a92b5e93169d97e1cad
 
