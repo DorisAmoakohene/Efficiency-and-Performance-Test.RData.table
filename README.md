@@ -78,13 +78,13 @@ These issues address performance-related concerns and propose potential fixes or
    [Fixes Regression](https://github.com/Rdatatable/data.table/commit/e793f53466d99f86e70fc2611b708ae8c601a451)
 
    D.
-   [link to my atime code](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/Performance%20regression%20with%235424.Rmd)
+   [link to my atime code](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/Performance%20regression%20with%235424.Rmd)
 
-   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issue#5424](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.png)
+   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issue#5424]()
 
-   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5366](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.2.png)
+   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5366]()
    
-   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5371](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.3.png)
+   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5371]()
 
 
   # 2.
@@ -98,9 +98,9 @@ C. Fixed:
 [The regression was fixed Regression by the addition of const int nth = getDTthreads]( https://github.com/Rdatatable/data.table/pull/4558/files)
 
 D.
-[link to my atime code](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/groupby%20with%20dogroups%20(R%20expression)%20performance%20regression%20%234200.Rmd)
+[link to my atime code](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/groupby%20with%20dogroups%20(R%20expression)%20performance%20regression%20%234200.Rmd)
 
-![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4200](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.4200.png)
+![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4200](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/groupbywithdogroups.png)
 
 
 # 3.
@@ -111,9 +111,9 @@ B. [Causes Regression](https://github.com/Rdatatable/data.table/issues/4311
 
 C. [Fixes Regression by passing shallow(dt.s4) to the isS4() function](https://github.com/Rdatatable/data.table/pull/4440)
 
-D. [Link to my atime code showing this Regression](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/Remove%20deep%20copy%20of%20indices%20from%20shallow.Rmd)
+D. [Link to my atime code showing this Regression](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/Remove%20deep%20copy%20of%20indices%20from%20shallow.Rmd)
 
-![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.4440.png)
+![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4440.png)
 
 
 # 4. 
@@ -123,9 +123,9 @@ B. The issue was reported to check the efficiency of the original code [(now = D
 
 C. This Regression is still Open
 
-D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/GForce%20optimisation%20could%20be%20more%20smart%20%233815.Rmd)
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/GForce%20optimisation%20could%20be%20more%20smart%20%233815.Rmd)
 
-![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/3815%23Gforce.png)
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.3815.png)
 
 
 # 5. 
@@ -135,9 +135,9 @@ B. [This issue refers to the slower performance of the data.table::frollmax() fu
 
 C. This issue is still Open
 
-D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/data.table%20frollmax%20on%20descending.Rmd)
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/data.table%20frollmax%20on%20descending.Rmd)
 
-![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/result.frollmax.png)
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/result.frollmax.png)
 
 
 # 6. 
@@ -147,7 +147,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
  
  C. This PR is still Open
 
- D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/faster%20bmerge%20numeric%20and%20roll.Rmd)
+ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/faster%20bmerge%20numeric%20and%20roll%20%235187.fix.Rmd)
 
 ![Plot showing the the memory and time metrics of the issue from the atime]()
 
@@ -159,7 +159,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
   
   C. This issue is currently open
 
-  D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/data.table%20is%20very%20slow%20with%20a%20single%20column%20%235650.Rmd)
+  D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/data.table%20is%20very%20slow%20with%20a%20single%20column%20%235650.Rmd)
 
 ![Plot showing the the memory and time metrics of the issue from the atime]()
   
@@ -173,7 +173,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 
   D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/Grouped%20calculations%20of%20list%20columns%20are%20very%20slow%20%235428.Rmd)
 
-![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.5428.png)
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.5428.png)
 
   
 # 9.
@@ -184,9 +184,9 @@ B. [implement frev as fast base::rev alternative #5907](https://github.com/Rdata
 
 C. This PR was fixed by introducing an [export(frev)](https://github.com/Rdatatable/data.table/pull/5907/files)
 
-D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/implement%20frev().Rmd)
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/implement%20frev().Rmd)
 
-![Plot showing the the memory and time metrics of the issue from the atime]()
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.result.frev.png)
 
 
 
@@ -198,9 +198,9 @@ B.benchmark of this PR vs master and 1.14.0,  using 1, 2, 4, 8 threads, to measu
 
 C. Fixed by #5916 by adding this line [int *restrict ansd = INTEGER(ans);const int *restrict xd = INTEGER(x); to the code](https://github.com/Rdatatable/data.table/pull/5916/files)
 
-D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/locating%20performance%20improvement%20in%20NEWS%20%235900.Rmd)
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/locating%20performance%20improvement%20in%20NEWS%20%235900.Rmd)
 
-![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.result.5900.png)
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.result.5900.png)
 
 
 
@@ -226,9 +226,9 @@ B. [setDT extremely slow for very wide input #5426](https://github.com/Rdatatabl
 
 C. Fixed by 
 
-D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/setDT%20extremely%20slow%20for%20very%20wide%20input%20%235426.Rmd)
+D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/setDT%20extremely%20slow%20for%20very%20wide%20input%20%235426.Rmd)
 
-![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Preformance-Test.RData.table/blob/main/atime.list.5427.png)
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.5427.png)
 
 
 
