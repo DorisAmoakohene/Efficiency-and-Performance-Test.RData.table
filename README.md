@@ -122,14 +122,15 @@ B.
 
 C.
 
-D. This is the link to my atime code(https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/%5B%5B%20by%20group%20performance%20%234655.Rmd)
+D. [This is the link to my atime code](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/%5B%5B%20by%20group%20performance%20%234655.Rmd)
+
 ![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4655.png)
 
 
 
-## Other data.table Test of codes
+# Other data.table Test of codes
 
-# . 
+# 
 A. [Reported the issue : GForce optimisation could be more smart](https://github.com/Rdatatable/data.table/issues/3815)
 
 B. The issue was reported to check the efficiency of the original code [(now = DT[, .(range_v1_v2=max(v1, na.rm=TRUE)-min(v2, na.rm=TRUE)), by=id3 ])](https://github.com/Rdatatable/data.table/issues/3815#issuecomment-1509890222)
@@ -140,15 +141,10 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 
 ![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.3815.png)
 
-# .
-A.
-b.
-c.
-D. This is the link to my atime code(https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/%5B%5B%20by%20group%20performance%20%234655.Rmd)
-![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4655.png)
 
 
-# . 
+
+#  
 A. [frollmax is slow on descending sequences](https://github.com/Rdatatable/data.table/issues/5923)
 
 B. [This issue refers to the slower performance of the data.table::frollmax() function when applied to descending sequences compared to ascending sequences.](https://github.com/Rdatatable/data.table/issues/5923#issue-2104222037)
@@ -160,7 +156,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 ![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/result.frollmax.png)
 
 
-# . 
+#  
  A. [faster bmerge numeric and roll #5187](https://github.com/Rdatatable/data.table/pull/5187#issuecomment-1881694259)
  
  B. [The problem is trying to optimize the performance of aligning two datasets based on date values, and they are experimenting with different approaches using data frames and data tables.](https://github.com/Rdatatable/data.table/pull/5187#issuecomment-947107447)
@@ -172,7 +168,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 ![Plot showing the the memory and time metrics of the issue from the atime]()
 
  
- # . 
+ # 
   A. [.data.table is very slow with a single integer #5636 ](https://github.com/Rdatatable/data.table/issues/5636 )
   
   B. This is issue about suggests  performance problem when using the data.table package with a single integer. The issue can be confirmed from this reported [ code snippet ](https://github.com/Rdatatable/data.table/issues/5923#issue-2104222037) 
@@ -184,7 +180,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 ![Plot showing the the memory and time metrics of the issue from the atime]()
   
 
- # .
+ # 
   A. [Grouped calculations of list columns are very slow #5428](https://github.com/Rdatatable/data.table/issues/5428)
   
   B. This issue is about the slow performance of creating a list column in a [grouped calculation using the data.table package.] (https://github.com/Rdatatable/data.table/issues/5428#issue-1327797930)
@@ -210,7 +206,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 
 
 
-# . 
+# 
 
 A.[locating performance improvement in NEWS #5900](https://github.com/Rdatatable/data.table/issues/5900)
 
@@ -238,7 +234,7 @@ D. [link to my atime code visualizing the issue]()
 
 
 
-# .
+# 
 
 A.[Move some setDT validation checks to C #5427](https://github.com/Rdatatable/data.table/pull/5427)
 
@@ -298,3 +294,36 @@ Conducted a comparison of data reshaping techniques between data.table and other
 This shows the comparison of creating data frames in R using data.frame, data.table and tibble in dplyr
 
 7. ![Creating dataframe](https://github.com/DorisAmoakohene/Researchwork_Rdata.table/blob/main/ml.create.png)
+
+# Efficiency of the Data.Table and with Pandas in Python
+
+We will explore two widely used libraries, data.table in R and pandas in Python, which excel in data manipulation and provide versatile functionalities for working with data, focusing on their capabilities for reading, writing, and reshaping data.
+
+# Example 1:  Writing a CSV File with data.table::fwrite() and pandas::to_csv()
+
+## fwrite: fast CSV writer
+
+Data.table provides the fwrite() function for writing data to a file while Pandas offers the to_csv() function for writing data to a CSV file
+![https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/1Benchmarking%20Common%20Pandas%20in%20Python%20and%20Data.table%20in%20R.Rmd](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/gg.write.dt.pd.png)
+
+# Example 2: Reading a CSV File with data.table::fread() and pandas::read_csv()
+
+## fread: fast CSV reader
+
+Data.table provides the fread() function for reading data from a CSV file while Pandas offers the read_csv() function for reading data from a CSV file.
+![https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/1Benchmarking%20Common%20Pandas%20in%20Python%20and%20Data.table%20in%20R.Rmd](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/gg.read.pd.png)
+
+## wide to long reshape.
+
+In data.table, the data.table::melt() function is used to convert data from a wide format to a long format, while in Pandas, the pandas::melt() function is used to convert data from a wide format to a long format.
+
+## data.table::melt() is faster
+
+![https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/1Benchmarking%20Common%20Pandas%20in%20Python%20and%20Data.table%20in%20R.Rmd](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/ml.wide2long.pd.png)
+
+## long to wide reshape
+
+In data.table, the data.table::dcast() function is often used to convert data from a long format to a wide format, and in pandas, the pandas::pivot_table() function is used to convert data from a long format to a wide format.
+
+## data.table::dcast() is faster
+![https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/1Benchmarking%20Common%20Pandas%20in%20Python%20and%20Data.table%20in%20R.Rmd](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/ml.long2wide.png)
