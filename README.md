@@ -100,7 +100,7 @@ C. Fixed:
 D.
 [link to my atime code](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/groupby%20with%20dogroups%20(R%20expression)%20performance%20regression%20%234200.Rmd)
 
-![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4200]()
+![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4200](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4200.png)
 
 
 # 3.
