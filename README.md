@@ -80,9 +80,9 @@ These issues address performance-related concerns and propose potential fixes or
    D.
    [link to my atime code](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/Performance%20regression%20with%235424.Rmd)
 
-   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issue#5424]()
+   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issue#5424](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list1.png)
 
-   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5366]()
+   ![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5366](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list2.png)
    
    ![Plot showing the 3 branches(Regression,Fixed and Before) of Issues5371]()
 
