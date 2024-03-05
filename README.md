@@ -115,8 +115,21 @@ D. [Link to my atime code showing this Regression](https://github.com/DorisAmoak
 
 ![Plot showing the 3 branches(Regression,Fixed and Before) of the issues#4440](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4440.png)
 
+# 4.
+A.
 
-# 4. 
+B.
+
+C.
+
+D. This is the link to my atime code(https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/%5B%5B%20by%20group%20performance%20%234655.Rmd)
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4655.png)
+
+
+
+## Other data.table Test of codes
+
+# . 
 A. [Reported the issue : GForce optimisation could be more smart](https://github.com/Rdatatable/data.table/issues/3815)
 
 B. The issue was reported to check the efficiency of the original code [(now = DT[, .(range_v1_v2=max(v1, na.rm=TRUE)-min(v2, na.rm=TRUE)), by=id3 ])](https://github.com/Rdatatable/data.table/issues/3815#issuecomment-1509890222)
@@ -127,7 +140,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 
 ![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.3815.png)
 
-# 5.
+# .
 A.
 b.
 c.
@@ -135,7 +148,7 @@ D. This is the link to my atime code(https://github.com/DorisAmoakohene/Efficien
 ![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4655.png)
 
 
-# 6. 
+# . 
 A. [frollmax is slow on descending sequences](https://github.com/Rdatatable/data.table/issues/5923)
 
 B. [This issue refers to the slower performance of the data.table::frollmax() function when applied to descending sequences compared to ascending sequences.](https://github.com/Rdatatable/data.table/issues/5923#issue-2104222037)
@@ -147,7 +160,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 ![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/result.frollmax.png)
 
 
-# 6. 
+# . 
  A. [faster bmerge numeric and roll #5187](https://github.com/Rdatatable/data.table/pull/5187#issuecomment-1881694259)
  
  B. [The problem is trying to optimize the performance of aligning two datasets based on date values, and they are experimenting with different approaches using data frames and data tables.](https://github.com/Rdatatable/data.table/pull/5187#issuecomment-947107447)
@@ -159,7 +172,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 ![Plot showing the the memory and time metrics of the issue from the atime]()
 
  
- # 7. 
+ # . 
   A. [.data.table is very slow with a single integer #5636 ](https://github.com/Rdatatable/data.table/issues/5636 )
   
   B. This is issue about suggests  performance problem when using the data.table package with a single integer. The issue can be confirmed from this reported [ code snippet ](https://github.com/Rdatatable/data.table/issues/5923#issue-2104222037) 
@@ -171,7 +184,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 ![Plot showing the the memory and time metrics of the issue from the atime]()
   
 
- # 8.
+ # .
   A. [Grouped calculations of list columns are very slow #5428](https://github.com/Rdatatable/data.table/issues/5428)
   
   B. This issue is about the slow performance of creating a list column in a [grouped calculation using the data.table package.] (https://github.com/Rdatatable/data.table/issues/5428#issue-1327797930)
@@ -183,7 +196,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 ![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.5428.png)
 
   
-# 9.
+# .
 
 A.[implement frev() - base::rev() that allocates less #5885](https://github.com/Rdatatable/data.table/issues/5885)
 
@@ -197,7 +210,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 
 
 
-# 10. 
+# . 
 
 A.[locating performance improvement in NEWS #5900](https://github.com/Rdatatable/data.table/issues/5900)
 
@@ -211,7 +224,7 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 
 
 
-# 11.
+# .
 
 A.Major performance drop of keyed := when index is] present#4311](https://github.com/Rdatatable/data.table/issues/4311)
 
@@ -225,7 +238,7 @@ D. [link to my atime code visualizing the issue]()
 
 
 
-# 12.
+# .
 
 A.[Move some setDT validation checks to C #5427](https://github.com/Rdatatable/data.table/pull/5427)
 
