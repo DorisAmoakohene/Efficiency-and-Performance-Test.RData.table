@@ -127,8 +127,15 @@ D. [link to my atime code visualizing the issue](https://github.com/DorisAmoakoh
 
 ![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.3815.png)
 
+# 5.
+A.
+b.
+c.
+D. This is the link to my atime code(https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/%5B%5B%20by%20group%20performance%20%234655.Rmd)
+![Plot showing the the memory and time metrics of the issue from the atime](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/atime.list.4655.png)
 
-# 5. 
+
+# 6. 
 A. [frollmax is slow on descending sequences](https://github.com/Rdatatable/data.table/issues/5923)
 
 B. [This issue refers to the slower performance of the data.table::frollmax() function when applied to descending sequences compared to ascending sequences.](https://github.com/Rdatatable/data.table/issues/5923#issue-2104222037)
