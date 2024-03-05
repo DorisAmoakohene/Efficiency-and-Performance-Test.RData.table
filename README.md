@@ -299,21 +299,21 @@ This shows the comparison of creating data frames in R using data.frame, data.ta
 
 We will explore two widely used libraries, data.table in R and pandas in Python, which excel in data manipulation and provide versatile functionalities for working with data, focusing on their capabilities for reading, writing, and reshaping data.
 
-# Example 1:  Writing a CSV File with data.table::fwrite() and pandas::to_csv()
+## Example 1:  Writing a CSV File with data.table::fwrite() and pandas::to_csv()
 
 ## fwrite: fast CSV writer
 
 Data.table provides the fwrite() function for writing data to a file while Pandas offers the to_csv() function for writing data to a CSV file
 ![https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/1Benchmarking%20Common%20Pandas%20in%20Python%20and%20Data.table%20in%20R.Rmd](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/gg.write.dt.pd.png)
 
-# Example 2: Reading a CSV File with data.table::fread() and pandas::read_csv()
+## Example 2: Reading a CSV File with data.table::fread() and pandas::read_csv()
 
 ## fread: fast CSV reader
 
 Data.table provides the fread() function for reading data from a CSV file while Pandas offers the read_csv() function for reading data from a CSV file.
 ![https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/1Benchmarking%20Common%20Pandas%20in%20Python%20and%20Data.table%20in%20R.Rmd](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/gg.read.pd.png)
 
-## wide to long reshape.
+## Example 3: wide to long reshape.
 
 In data.table, the data.table::melt() function is used to convert data from a wide format to a long format, while in Pandas, the pandas::melt() function is used to convert data from a wide format to a long format.
 
@@ -321,7 +321,7 @@ In data.table, the data.table::melt() function is used to convert data from a wi
 
 ![https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/1Benchmarking%20Common%20Pandas%20in%20Python%20and%20Data.table%20in%20R.Rmd](https://github.com/DorisAmoakohene/Efficiency-and-Performance-Test.RData.table/blob/main/ml.wide2long.pd.png)
 
-## long to wide reshape
+## Example 4: long to wide reshape
 
 In data.table, the data.table::dcast() function is often used to convert data from a long format to a wide format, and in pandas, the pandas::pivot_table() function is used to convert data from a long format to a wide format.
 
