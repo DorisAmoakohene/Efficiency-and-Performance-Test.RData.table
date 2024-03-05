@@ -7,7 +7,7 @@ output: html_document
 
 
 
-#5424
+#issue5424
 
 ```{r}
 library(atime)
@@ -92,7 +92,7 @@ dev.off()
 ```
 
 
-
+#issues 5366
 ```{r}
 atime.list2 <- atime::atime_versions(
 pkg.path=tdir,
