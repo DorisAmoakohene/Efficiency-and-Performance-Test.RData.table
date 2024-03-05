@@ -1,0 +1,334 @@
+---
+title: 'Performance Comparison: Data.table in R and Pandas in Python!!'
+author: "Doris Amoakohene"
+date: "2024-03-03"
+output: html_document
+---
+
+# Introduction:
+
+R and Python are two programming languages that have gained immense popularity among data scientists, statisticians, and researchers. 
+In this blog, we will explore two widely used libraries, data.table in R and pandas in Python, which excel in data manipulation and provide versatile functionalities for working with data focusing on their capabilities for reading, writing, and reshaping data. We will also explain how to graphically demonstrate the time taken by each operation. We will use atime to compare and visualize the asymptotic performance (time and memory usage) of different functions in these packages.
+By comparing the asymptotic performance of these packages in this Languages, we aim to provide insights into their usage and help data scientists make informed choices when it comes to data manipulation and analysis.
+
+## Libraries
+
+
+```{r setup, include = FALSE,warning=FALSE,message=FALSE}
+
+library(data.table)
+library(reshape2)
+library(atime)
+library(ggplot2)
+library(reticulate)
+use_python("C:/Users/amoak/AppData/Local/Programs/Python/Python312/python.exe")
+virtualenv_create("fm-proj")
+use_virtualenv("fm-proj", required = F)
+
+```
+
+
+```{python}
+file_path = 'data.csv'
+```
+
+
+# Example 1:  Writing a CSV File with data.table::fwrite() and pandas::to_csv()
+
+## fwrite: fast CSV writer
+
+Data.table provides the fwrite() function for writing data to a file while Pandas offers the to_csv() function for writing data to a CSV file.
+
+## Comparison code
+
+```{r,warning=FALSE,message=FALSE}
+
+write.colors <- c(
+  "data.table::fwrite" = "#D6604D",
+  "pandas::to_csv" = "#BF812D"
+)
+
+file_path = 'data.csv'
+n.rows <- 100
+seconds.limit <- 10
+
+atime.write.vary.cols <- atime::atime(
+  N = as.integer(10^seq(2, 10, by = 0.2)),
+  setup = {
+    set.seed(1)
+    input.vec <- rnorm(n.rows * N)
+    input.mat <- matrix(input.vec, n.rows, N)
+    input.df <- data.frame(input.mat)
+    
+    pd <- import("pandas")
+   
+    input_df_pd <- r_to_py(input.df)
+    
+    
+
+  },
+  seconds.limit = seconds.limit,
+  "data.table::fwrite" = {
+    data.table::fwrite(input.df, tempfile(), showProgress = FALSE)
+  },
+  "pandas::to_csv" = {
+ 
+    input_df_pd$to_csv(file_path, index = FALSE)
+  }
+)
+
+```
+
+
+
+```{r,warning=FALSE,message=FALSE}
+refs.write.vary.cols <- atime::references_best(atime.write.vary.cols)
+pred.write.vary.cols <- predict(refs.write.vary.cols)
+
+gg.write.dt.pd <- plot(pred.write.vary.cols)+
+  theme(text=element_text(size=15))+
+  ggtitle(sprintf("Write real numbers to CSV, with pandas in Python and data.table in R, %d x N", n.rows))+
+  scale_x_log10("N = number of columns to write")+
+  scale_y_log10("Computation time (seconds)
+median line, min/max band
+over 10 timings")+
+  facet_null()+
+  scale_fill_manual(values=write.colors)+
+  scale_color_manual(values=write.colors)
+```
+
+
+
+
+```{r,warning=FALSE,message=FALSE}
+
+ggsave("gg.write.dt.pd.png", gg.write.dt.pd, width = 10, height = 6, units = "in", dpi = 300)
+
+```
+
+
+# Example 2:  Writing a CSV File with data.table::fread() and pandas::read_csv()
+
+## fread: fast CSV reader
+
+Data.table provides the fread() function for reading data from a CSV file while Pandas offers the read_csv() function for reading data from a CSV file.
+
+## Comparison code
+
+```{r,warning=FALSE,message=FALSE}
+read.colors <- c(
+  "data.table::fread" = "#D6604D",
+  "pandas::read_csv" = "#BF812D"
+)
+n.rows <- 100
+seconds.limit <- 10
+file_path = 'data.csv'
+
+atime.read <- atime::atime(
+  N = as.integer(10^seq(2, 15, by = 0.2)),
+  setup = {
+    set.seed(1)
+    input.vec <- rnorm(n.rows*N)
+    input.mat <- matrix(input.vec, n.rows, N)
+    input.df <- data.frame(input.mat)
+    input.csv <- tempfile()
+    fwrite(input.df, "data.csv")
+    
+    pd <- import("pandas")
+    input_df_pd <- pd$DataFrame(input.df)
+    
+    
+    
+  },
+  seconds.limit = seconds.limit,
+  "data.table::fread" = {
+    data.table::fread("data.csv", showProgress = FALSE)
+    
+    
+  },
+  "pandas::read_csv" = {
+    pd <- import("pandas")
+    reticulate::py_run_string("import pandas as pd")
+    reticulate::py_run_string("pd.read_csv(file_path)")
+    
+  }
+)
+```
+
+
+```{r,warning=FALSE,message=FALSE}
+refs.read.vary.cols <- atime::references_best(atime.read)
+pred.read.vary.cols <- predict(refs.read.vary.cols)
+
+gg.read.pd <- plot(pred.read.vary.cols)+
+  theme(text=element_text(size=15))+
+  ggtitle(sprintf("Read real numbers to CSV, with pandas in Python and data.table in R, %d x N", n.rows))+
+  scale_x_log10("N = number of columns to write")+
+  scale_y_log10("Computation time (seconds)
+median line, min/max band
+over 10 timings")+
+  facet_null()+
+  scale_fill_manual(values=read.colors)+
+  scale_color_manual(values=read.colors)
+```
+
+```{r,warning=FALSE,message=FALSE}
+
+ggsave("gg.read.pd.png", gg.read.pd, width = 10, height = 6, units = "in", dpi = 300)
+
+
+
+```
+
+
+
+
+# Example 3. Reshape performance comparison.
+
+Data reshaping means changing the shape of the data, to get it into a more appropriate format, for learning/plotting/etc. Here we consider wide to long  and long to wide reshape, which means we start with a wide table (many columns) and end up with a long table (fewer columns) and vice versa. 
+
+## A.	wide to long reshape.
+
+In data.table, the data.table::melt() function is used to convert data from a wide format to a long format. It allows you to specify the columns to keep as identifiers and the columns to gather as variables. The resulting data frame will have a row for each combination of identifiers and variables while in Pandas, the pandas::melt() function is used to convert data from a wide format to a long format. It requires specifying the columns to keep as identifiers and the columns to unpivot as variables. The resulting data frame will have a row for each combination of identifiers and variables.
+
+## Comparison code
+
+```{r,warning=FALSE,message=FALSE}
+
+ml.colors <- c(
+  "data.table::melt"="#D6604D",
+  "pandas::pd.melt" = "#BF812D"
+  )
+n.folds <- 10
+n.rows <- 100
+seconds.limit <- 10
+
+ml.reshape.atime <- atime::atime(
+  N=as.integer(10^seq(2, 15, by=0.2)),
+  setup={
+    df <- data.frame(
+      id = rep(1:N, each = 2),
+      category = rep(c("A", "B"), N),
+      value = rnorm(2 * N)
+      )
+    },
+  seconds.limit= seconds.limit,
+  
+  "data.table::melt" = {
+    data.table::melt(data.table(df), id.vars = c("id",  "category"),variable.names="variable", value.name = "value")
+  },
+  "pandas::pd.melt" = {
+    py_df <- reticulate::r_to_py(df)
+    pd <- import("pandas")
+    pd$melt(py_df, id_vars = c("id", "category"), value_name = "score")
+    
+  }
+
+  )
+
+```
+
+```{r,warning=FALSE,message=FALSE}
+
+ml.reshape.refs <- atime::references_best(ml.reshape.atime)
+ml.reshape.pred <- predict(ml.reshape.refs)
+ml.wide2long.pd <- plot(ml.reshape.pred)+
+  theme(text=element_text(size=15))+
+  ggtitle(sprintf("Reshaping from wide to long panda & data.table over %dreal numbers, N times", n.folds))+
+  scale_x_log10("N = number of Mean,SD,Length to compute")+
+  scale_y_log10("Computation time (seconds)
+median line, min/max band
+over 10 timings")+
+  facet_null()+
+  scale_fill_manual(values=ml.colors)+
+  scale_color_manual(values=ml.colors)
+```
+
+```{r,warning=FALSE,message=FALSE}
+ggsave("ml.wide2long.pd.png", ml.wide2long.pd, width = 10, height = 6, units = "in", dpi = 300)
+
+```
+
+
+
+## B.long to wide reshape
+
+In data.table, the data.table::dcast() function is often used to convert data from a long format to a wide format. It allows you to specify the columns to use as identifiers and the column to spread as values. The resulting data table will have one row for each combination of identifiers and one column for each unique value and in pandas, the pandas::pivot_table() function is used to convert data from a long format to a wide format. It requires specifying the columns to use as index, columns, and values. The resulting DataFrame will have one row for each. 
+
+## Comparison code
+
+
+```{r,warning=FALSE,message=FALSE}
+
+ml.colors <- c(
+  "data.table::dcast" = "#D6604D",
+  "pandas::pivot_table" = "#BF812D"
+)
+
+n.folds <- 10
+n.rows <- 100
+seconds.limit <- 1
+
+ml.long2wide.atime <- atime::atime(
+  N=as.integer(10^seq(2, 7, by=0.2)),
+  
+  setup={
+    df <- data.frame(
+      id = rep(1:N, each = 2),
+      category = rep(c("A", "B"), N),
+      value = rnorm(2 * N)
+      )
+    },
+  seconds.limit= seconds.limit,
+  "data.table::dcast" = {
+    data.table::dcast(data.table(df), id ~ category, value.var = "value")
+  },
+  "pandas::pivot_table" = {
+    py_df <- reticulate::r_to_py(df)
+    pd <- import("pandas")
+    pd$pivot_table(py_df, values = "value", index = "id", columns = "category")
+  }
+  )
+
+```
+
+
+
+```{r,warning=FALSE,message=FALSE}
+ml.long2wide.refs <- atime::references_best(ml.long2wide.atime)
+ml.long2wide.pred <- predict(ml.long2wide.refs)
+ml.long2wide <- plot(ml.long2wide.pred)+
+  theme(text=element_text(size=15))+
+  ggtitle(sprintf("Reshaping from long to wide over %dreal numbers, N times", n.folds))+
+  scale_x_log10("N = number of Mean,SD,Length to compute")+
+  scale_y_log10("Computation time (seconds)
+median line, min/max band
+over 10 timings")+
+  facet_null()+
+  scale_fill_manual(values=ml.colors)+
+  scale_color_manual(values=ml.colors)
+
+```
+
+```{r,warning=FALSE,message=FALSE}
+ggsave("ml.long2wide.png", ml.long2wide, width = 10, height = 6, units = "in", dpi = 300)
+
+```
+
+
+
+# Conclusions 
+
+In conclusion, we have shown how to use atime to compare asymptotic time of the two packages. Both Pandas and Data.table are powerful libraries for data manipulation in Python and R respectively. Pandas offers a comprehensive set of functions and a user-friendly interface, making it suitable for a wide range of data analysis tasks. On the other hand, Data.table excels in terms of performance and memory efficiency, making it an excellent choice for handling large datasets and complex operations.
+
+The choice between the two libraries ultimately depends on the specific requirements of your data manipulation tasks. It is recommended to consider the size of the dataset, the complexity of the operations, and personal preferences when making a decision.
+
+
+
+
+
+
+
+
+
+
