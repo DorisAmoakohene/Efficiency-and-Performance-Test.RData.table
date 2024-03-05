@@ -3,9 +3,10 @@ title: '[[ by group performance #4655'
 output: html_document
 date: "2024-02-15"
 ---
+cd ~/OneDrive\ -\ Northern\ Arizona\ University/MSINF\ SEM2/685\ SEM\ 2/dtclone/Efficiency-and-Performance-Test.RData.table/
 
 
-```{r}
+
 library(data.table)
 
 set.seed(123L)
@@ -44,7 +45,7 @@ bench::mark(
 ##  <bch:expr>                           <dbl>  <dbl>     <dbl> <bch:byt>    <dbl>
 ##1 dt[, value[[1L]], by = ordered_id]   0.634  0.691     1358.     401KB     15.0
 ##2 dt[, value[[1L]], by = unordered_id] 0.651  0.778     1187.     409KB     12.8
-```
+
 
 
 ```{r}
@@ -108,9 +109,9 @@ atime.list.4655 <- atime::atime_versions(
   },
   
   expr=data.table:::`[.data.table`(dt, , value[[1L]], by = unordered_id),
-  #"Before"="8c5042ca9aa5c6217b460fa5e8bf01003c7be358",#https://github.com/Rdatatable/data.table/commit/8c5042ca9aa5c6217b460fa5e8bf01003c7be358
-  "Regression"="06c43b102f4b97ec91cb14a0c1631f771a9a0414", #https://github.com/Rdatatable/data.table/tree/06c43b102f4b97ec91cb14a0c1631f771a9a0414
-  "Fixed"="a8ec94484d2cc375d8295a94bacc5353576c238a") #https://github.com/Rdatatable/data.table/commit/a8ec94484d2cc375d8295a94bacc5353576c238a
+  "Before"="e787bf98af46de771bebe057debbdd4397156f79",#https://github.com/Rdatatable/data.table/commit/06c43b102f4b97ec91cb14a0c1631f771a9a0414
+  "Regression"="aa608710cf0ec03c3c6cc3d7c03c96f2034ac856", #https://github.com/Rdatatable/data.table/tree/aa608710cf0ec03c3c6cc3d7c03c96f2034ac856
+  "Fixed"="06c43b102f4b97ec91cb14a0c1631f771a9a0414") #https://github.com/Rdatatable/data.table/commit/06c43b102f4b97ec91cb14a0c1631f771a9a0414
 ```
 
 
